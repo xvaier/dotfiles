@@ -1,0 +1,21 @@
+authtoken: 6cnf1HCpXtvm8GHqUiwj6_2wE1YcnJNWpBP3hamBwXZ
+console_ui_color: transparent
+tunnels:
+  merinioxp:
+    proto: http
+    addr: 3000
+    subdomain: xp-merinio
+  meriniocontact:
+    proto: http
+    addr: 3004
+    subdomain: merinio
+  merinioreact:
+    proto: http
+    addr: 4011
+    subdomain: react-merinio
+  meriniowebsite:
+    proto: http
+    addr: 5000
+    subdomain: merinio-website
+version: "2"
+region: us
