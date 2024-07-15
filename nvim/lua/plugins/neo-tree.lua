@@ -3,6 +3,9 @@
 
 return {
   'nvim-neo-tree/neo-tree.nvim',
+  init = function()
+    vim.keymap.set('n', '<leader>tt', '<Cmd>Neotree toggle<CR>', { desc = '[T]oggle Neo[t]ree' })
+  end,
   version = '*',
   dependencies = {
     'nvim-lua/plenary.nvim',
@@ -10,16 +13,4 @@ return {
     'MunifTanjim/nui.nvim',
   },
   cmd = 'Neotree',
-  keys = {
-    { '\\', ':Neotree reveal<CR>', { desc = 'NeoTree reveal' } },
-  },
-  opts = {
-    filesystem = {
-      window = {
-        mappings = {
-          ['\\'] = 'close_window',
-        },
-      },
-    },
-  },
 }
