@@ -636,6 +636,7 @@ require('lazy').setup({
   require 'plugins.debug',
   require 'plugins.tmux-navigation',
   require 'plugins.gitsigns',
+  require 'plugins.git-blame',
 }, {
   ui = {
     -- If you are using a Nerd Font: set icons to an empty table which will use the
