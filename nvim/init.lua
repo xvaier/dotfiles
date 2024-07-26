@@ -638,6 +638,7 @@ require('lazy').setup({
   require 'plugins.gitsigns',
   require 'plugins.git-blame',
   require 'plugins.noice',
+  require 'plugins.barbar',
 }, {
   ui = {
     -- If you are using a Nerd Font: set icons to an empty table which will use the
