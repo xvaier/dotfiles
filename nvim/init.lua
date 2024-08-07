@@ -583,7 +583,7 @@ require('lazy').setup({
   require 'plugins.gitsigns',
   require 'plugins.git-blame',
   require 'plugins.noice',
-  require 'plugins.barbar',
+  -- require 'plugins.barbar',
 }, {
   ui = {
     icons = {},
