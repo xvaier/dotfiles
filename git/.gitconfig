@@ -1,6 +1,6 @@
 [user]
 	email = xavier.lavallee@gmail.com
-	signingkey = /Users/xavierlavallee/.ssh/id_rsa.pub
+	signingkey = ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAICVC/tIa8cE0SmuUTohGFJQYEqwTF8xcdNeKu8bx4SKg
 	name = Xavier Lavallee
 [commit]
 	gpgsign = true
@@ -15,3 +15,5 @@
 	autoSetupRemote = true
 [gpg]
 	format = ssh
+[gpg "ssh"]
+	program = /Applications/1Password.app/Contents/MacOS/op-ssh-sign
