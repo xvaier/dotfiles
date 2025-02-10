@@ -121,6 +121,46 @@ source ${ZIM_HOME}/init.zsh
 # zsh-history-substring-search
 #
 
+# pyro qol
+export LOCAL_PYRO_DIR="$HOME/Developer/flare/pyro"
+#export PYROLITE_VERBOSE=debug
+#export PYROUTILS_CACHE=YES
+alias master="git checkout master"
+alias cdp="cd $LOCAL_PYRO_DIR & source venv/bin/activate"
+alias pyrolite="$LOCAL_PYRO_DIR/carbon/bin/pyrolite"
+alias awsl="aws sso login"
+alias verify="$LOCAL_PYRO_DIR/bin/verify"
+alias kcp="$LOCAL_PYRO_DIR/carbon/bin/kubectl-production-developer"
+alias kcs="$LOCAL_PYRO_DIR/carbon/bin/kubectl-staging-developer"
+
+plrefresh() {
+    docker system prune -f
+    # npm install -g parallelshell
+    parallelshell -v \
+        "nice -n 10 ./carbon/bin/pyrolite venv pyro" \
+        "nice -n 10 ./carbon/bin/pyrolite venv-pants python-default" \
+        "nice -n 10 ./carbon/bin/pyrolite build firework" \
+        "nice -n 10 ./carbon/bin/pyrolite build nitrate-test"
+}
+
+glab-ci-status() {
+    glab ci status | grep -v -E 'manual|skipped|created|SHA:' | sort | sed -E 's/success/\x1b[32m&\x1b[0m/g' | sed -E 's/failed/\x1b[31m&\x1b[0m/g' | sed -E 's/running/\x1b[34m&\x1b[0m/g'
+}
+
+glab-ci-status-watch() {
+    watch -c -n 1 -x /bin/zsh -i -c "glab-ci-status"
+}
+
+glab-find-duplicate-pipelines() {
+    glab ci list -F json | jq '
+        [ .[] | select( .status == "running" or .status == "pending" ) ]
+            | group_by( .ref )
+            | .[]
+            | select( length > 1 )
+            | [.[] | [.ref, .status, .web_url, .created_at] ]
+        '
+}
+
 zmodload -F zsh/terminfo +p:terminfo
 # Bind ^[[A/^[[B manually so up/down works both before and after zle-line-init
 for key ('^[[A' '^P' ${terminfo[kcuu1]}) bindkey ${key} history-substring-search-up
@@ -129,4 +169,25 @@ for key ('k') bindkey -M vicmd ${key} history-substring-search-up
 for key ('j') bindkey -M vicmd ${key} history-substring-search-down
 unset key
 # }}} End configuration added by Zim install
+
+
+# brew managed completion
+eval "$(/opt/homebrew/bin/brew shellenv)"
+if type brew &>/dev/null; then
+  FPATH="$(brew --prefix)/share/zsh/site-functions:${FPATH}"
+  autoload -Uz compinit
+fi
+
+# nvm
+export NVM_DIR="$HOME/.nvm"
+[ -s "/opt/homebrew/opt/nvm/nvm.sh" ] && \. "/opt/homebrew/opt/nvm/nvm.sh"  # This loads nvm
+[ -s "/opt/homebrew/opt/nvm/etc/bash_completion.d/nvm" ] && \. "/opt/homebrew/opt/nvm/etc/bash_completion.d/nvm"  # This loads nvm bash_completion
+
+# manage installed and available python versions
+export PYENV_ROOT="$HOME/.pyenv"
+[[ -d $PYENV_ROOT/bin ]] && export PATH="$PYENV_ROOT/bin:$PATH"
+eval "$(pyenv init -)"
+
+# run .envrc file on cd
+eval "$(direnv hook zsh)"
 

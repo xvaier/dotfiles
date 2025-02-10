@@ -7,4 +7,3 @@ ln -f -s ~/.dotfiles/tmux/.tmux.conf ~
 ln -f -s ~/.dotfiles/tmux/tmux-spotify ~/.tmux/tmux-spotify
 ln -f -s ~/.dotfiles/ngrok/.ngrok2/ ~
 ln -f -s ~/.dotfiles/wezterm/.wezterm.lua ~
-ln -f -s ~/.dotfiles/git/.gitconfig ~
