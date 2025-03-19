@@ -132,6 +132,7 @@ alias awsl="aws sso login"
 alias verify="$WORK_DIR/bin/verify"
 alias kcp="kubectl"
 alias kcs="kubectl"
+alias worknpm="$WORK_DIR/bin/npm"
 
 plrefresh() {
     docker system prune -f
