@@ -132,6 +132,7 @@ alias awsl="aws sso login"
 alias verify="$LOCAL_PYRO_DIR/bin/verify"
 alias kcp="$LOCAL_PYRO_DIR/carbon/bin/kubectl-production-developer"
 alias kcs="$LOCAL_PYRO_DIR/carbon/bin/kubectl-staging-developer"
+alias pyronpm="$LOCAL_PYRO_DIR/carbon/bin/npm"
 
 plrefresh() {
     docker system prune -f
