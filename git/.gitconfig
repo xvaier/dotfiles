@@ -1,6 +1,5 @@
 [user]
 	email = xavier.lavallee@gmail.com
-	signingkey = ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAICVC/tIa8cE0SmuUTohGFJQYEqwTF8xcdNeKu8bx4SKg
 	name = Xavier Lavallee
 [commit]
 	gpgsign = true
