@@ -133,6 +133,7 @@ alias verify="$WORK_DIR/bin/verify"
 alias kcp="kubectl"
 alias kcs="kubectl"
 alias worknpm="$WORK_DIR/bin/npm"
+alias workfmt="$WORK_DIR/bin/format && $WORK_DIR/bin/format-eslint"
 
 plrefresh() {
     docker system prune -f
