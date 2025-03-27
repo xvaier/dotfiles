@@ -51,6 +51,11 @@ return { {
     init = function()
       vim.opt.signcolumn = 'yes'
     end,
+    opts = {
+      servers = {
+        terraformls = {},
+      },
+    },
     config = function()
       local lspconfig = require('lspconfig')
       local lsp_defaults = lspconfig.util.default_config
@@ -90,7 +95,7 @@ return { {
       })
 
       require('mason-lspconfig').setup({
-        ensure_installed = { 'volar', 'tsserver' },
+        ensure_installed = { 'volar', 'tsserver', 'tflint' },
         automatic_installation = {},
         handlers = {
           function(server_name)
@@ -141,7 +146,7 @@ return { {
         },
       }
 
-       lspconfig.volar.setup {
+      lspconfig.volar.setup {
         filetypes = { 'typescript', 'javascript', 'javascriptreact', 'typescriptreact', 'vue' },
         init_options = {
           vue = {},
