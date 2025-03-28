@@ -57,11 +57,15 @@ brew install lazygit
 brew install twilio
 brew install s3cmd
 brew install docker
+brew install bat
+brew install fd
 # JS/NodeJS
 brew install nvm
 brew install node
 brew install pnpm
 brew install yarn
+# Terraform
+brew install hashicorp/tap/terraform-ls
 # Prevents itunes from opening when spotify is closed
 brew install notunes
 
