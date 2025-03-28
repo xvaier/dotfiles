@@ -12,7 +12,9 @@ local conditions = {
   end,
 }
 
-return { {
+local git_blame = require('gitblame')
+
+return {
   "https://github.com/nvim-lualine/lualine.nvim",
   event = "VeryLazy",
   config = function()
@@ -27,8 +29,7 @@ return { {
           "mode",
           fmt = function(str) return str:sub(1, 1):lower() end
         } },
-        lualine_b = {},
-        lualine_c = { {
+        lualine_b = { {
           "branch",
           icon = "",
         }, {
@@ -39,7 +40,11 @@ return { {
           "diagnostics",
           sources = { "nvim_diagnostic" },
           symbols = { error = " ", warn = " ", info = " " },
-        }, },
+        } },
+        lualine_c = { {
+          git_blame.get_current_blame_text,
+          cond = git_blame.is_blame_text_available
+        } },
         lualine_y = {},
         lualine_z = {},
         lualine_x = { {
@@ -55,4 +60,4 @@ return { {
       }
     })
   end,
-} }
+}

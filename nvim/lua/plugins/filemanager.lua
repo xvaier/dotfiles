@@ -1,4 +1,4 @@
-return { {
+return {
   'stevearc/oil.nvim',
   ---@module 'oil'
   ---@type oil.SetupOpts
@@ -8,4 +8,4 @@ return { {
   keys = {
     { "-", "<Cmd>Oil<CR>", desc = "Open file manager" },
   },
-} }
+}
