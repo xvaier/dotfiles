@@ -48,6 +48,12 @@ source ${ZIM_HOME}/init.zsh
 # Post-init module configuration
 # ------------------------------
 
+cd_to_git_root() {
+    cd "$(git rev-parse --show-toplevel)"
+}
+#alias cdf="cd_to_dir"
+alias cdg="cd_to_git_root"
+
 # Work aliases
 alias awsl="aws sso login"
 export LOCAL_PYRO_DIR="$HOME/Developer/flare/pyro"
@@ -75,3 +81,4 @@ eval "$(pyenv init -)"
 # run .envrc file on cd
 eval "$(direnv hook zsh)"
 
+[ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
