@@ -1,4 +1,4 @@
-return { {
+return {
   {
     'williamboman/mason.nvim',
     lazy = false,
@@ -51,11 +51,6 @@ return { {
     init = function()
       vim.opt.signcolumn = 'yes'
     end,
-    opts = {
-      servers = {
-        terraformls = {},
-      },
-    },
     config = function()
       local lspconfig = require('lspconfig')
       local lsp_defaults = lspconfig.util.default_config
@@ -152,6 +147,8 @@ return { {
           vue = {},
         },
       }
+
+      lspconfig.terraformls.setup({})
     end
   }
-} }
+}
