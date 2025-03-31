@@ -8,7 +8,7 @@ return {
   },
   lazy = false,
   keys = {
-    { "<Leader>gb", "<Cmd>GitBlameOpenCommitURL<CR>", desc = "[g]o to [b]lame commit URL" },
-    { "<Leader>sf", "<Cmd>Files<CR>",                 desc = "[s]earch [f]iles" },
+    { "<Leader>gb", "<Cmd>GitBlameOpenCommitURL<CR>", desc = "Go to blame commit URL" },
+    { "<Leader>sf", "<Cmd>Files<CR>",                 desc = "Search files" },
   }
 }

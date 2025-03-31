@@ -3,13 +3,13 @@ return {
     "junegunn/fzf.vim",
     dependencies = { "junegunn/fzf" },
     keys = {
-      { "<Leader>sf", "<Cmd>Files<CR>",         desc = "[s]earch [f]iles" },
-      { "<Leader>sg", "<Cmd>GFilesSafe<CR>",    desc = "[s]earch [g]it files" },
-      { "<Leader>sc", "<Cmd>GFilesChanged<CR>", desc = "[s]earch [c]hanged files" },
-      { "<Leader>sb", "<Cmd>Buffers<CR>",       desc = "[s]earch [b]uffers" },
-      { "<Leader>sa", "<Cmd>Ag<CR>",            desc = "[s]earch [a]g (silver searcher)" },
-      { "<Leader>sr", "<Cmd>Rg<CR>",            desc = "[s]earch [r]g (ripgrep)" },
-      { "<Leader>sl", "<Cmd>Lines<CR>",         desc = "[s]earch [l]ines in open buffers" },
+      { "<Leader>sf", "<Cmd>Files<CR>",         desc = "Search files" },
+      { "<Leader>sg", "<Cmd>GFilesSafe<CR>",    desc = "Search Git files" },
+      { "<Leader>sc", "<Cmd>GFilesChanged<CR>", desc = "Search Changed files" },
+      { "<Leader>sb", "<Cmd>Buffers<CR>",       desc = "Search Buffers" },
+      { "<Leader>sa", "<Cmd>Ag<CR>",            desc = "Search Ag (silver searcher)" },
+      { "<Leader>sr", "<Cmd>Rg<CR>",            desc = "Search Rg (ripgrep)" },
+      { "<Leader>sl", "<Cmd>Lines<CR>",         desc = "Search lines in open buffers" },
     },
     config = function()
       local function gfiles_safe(arg, bang)
