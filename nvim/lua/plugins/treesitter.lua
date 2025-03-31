@@ -8,7 +8,7 @@ return {
       ensure_installed = { "lua", "vimdoc", "javascript", "typescript", "html", "python", "terraform", "hcl" },
       sync_install = false,
       highlight = { enable = true },
-      indent = { enable = true },
+      indent = { enable = false },
       auto_install = true,
       modules = {},
       ignore_install = {}
