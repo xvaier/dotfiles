@@ -9,6 +9,5 @@ return {
   lazy = false,
   keys = {
     { "<Leader>gb", "<Cmd>GitBlameOpenCommitURL<CR>", desc = "Go to blame commit URL" },
-    { "<Leader>sf", "<Cmd>Files<CR>",                 desc = "Search files" },
   }
 }
