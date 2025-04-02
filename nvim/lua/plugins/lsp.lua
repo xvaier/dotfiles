@@ -61,6 +61,13 @@ return {
         require('cmp_nvim_lsp').default_capabilities()
       )
 
+      vim.diagnostic.config({
+        virtual_text = true,
+        signs = true,
+        underline = true,
+        update_in_insert = false,
+      })
+
       vim.api.nvim_create_autocmd('LspAttach', {
         desc = 'LSP actions',
         callback = function(event)
@@ -68,6 +75,7 @@ return {
 
           vim.keymap.set('n', 'K', '<cmd>lua vim.lsp.buf.hover()<cr>',
             vim.tbl_extend("force", opts, { desc = "Show hover information" }))
+          vim.keymap.set('n', '<leader>e', vim.diagnostic.open_float, { desc = 'Expand diagnostic' })
           vim.keymap.set('n', '<leader>gd', '<cmd>lua vim.lsp.buf.definition()<cr>',
             vim.tbl_extend("force", opts, { desc = "Go to definition" }))
           vim.keymap.set('n', '<leader>gD', '<cmd>lua vim.lsp.buf.declaration()<cr>',
