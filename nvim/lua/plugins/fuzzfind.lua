@@ -1,29 +1,18 @@
 return {
   {
-    "junegunn/fzf.vim",
-    dependencies = { "junegunn/fzf" },
+    "ibhagwan/fzf-lua",
     keys = {
-      { "<Leader>sf", "<Cmd>Files<CR>",         desc = "Search files" },
-      { "<Leader>sg", "<Cmd>GFilesSafe<CR>",    desc = "Search Git files" },
-      { "<Leader>sc", "<Cmd>GFilesChanged<CR>", desc = "Search Changed files" },
-      { "<Leader>sb", "<Cmd>Buffers<CR>",       desc = "Search Buffers" },
-      { "<Leader>sa", "<Cmd>Ag<CR>",            desc = "Search Ag (silver searcher)" },
-      { "<Leader>sr", "<Cmd>Rg<CR>",            desc = "Search Rg (ripgrep)" },
-      { "<Leader>sl", "<Cmd>Lines<CR>",         desc = "Search lines in open buffers" },
+      { "<Leader>sf", function() require("fzf-lua").files() end,               desc = "Search files" },
+      { "<Leader>sg", function() require("fzf-lua").git_files() end,           desc = "Search Git files" },
+      { "<Leader>sc", function() require("fzf-lua").git_status() end,          desc = "Search Changed files" },
+      { "<Leader>sb", function() require("fzf-lua").buffers() end,             desc = "Search Buffers" },
+      { "<Leader>sr", function() require("fzf-lua").live_grep() end,           desc = "Search Ripgrep" },
+      { "<Leader>sl", function() require("fzf-lua").lines() end,               desc = "Search lines in open buffers" },
     },
     config = function()
-      local function gfiles_safe(arg, bang)
-        local cwd = vim.fn.getcwd()
-        vim.fn["fzf#vim#gitfiles"](arg or "", { dir = cwd }, bang and 1 or 0)
-      end
-
-      vim.api.nvim_create_user_command("GFilesSafe", function(opts)
-        gfiles_safe("", opts.bang)
-      end, { bang = true })
-
-      vim.api.nvim_create_user_command("GFilesChanged", function(opts)
-        gfiles_safe("?", opts.bang)
-      end, { bang = true })
+      require("fzf-lua").setup({
+        winopts = { preview = { default = "bat" } }
+      })
     end,
   },
 }
