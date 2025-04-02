@@ -4,7 +4,7 @@ return {
     enabled = true,
     message_template = " <author> <date>: <summary>",
     date_format = "%r",
-    virtual_text_column = 1,
+    display_virtual_text = 0,
   },
   lazy = false,
   keys = {
