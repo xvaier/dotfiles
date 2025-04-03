@@ -7,4 +7,7 @@ ln -sf ~/.dotfiles/zsh/.fzf.zsh ~/.fzf.zsh
 ln -sf ~/.dotfiles/tmux/.tmux.conf ~
 ln -sf ~/.dotfiles/tmux/tmux-spotify ~/.tmux/tmux-spotify
 ln -sf ~/.dotfiles/wezterm/.wezterm.lua ~
+
+# Setup bat config
 ln -sfn ~/.dotfiles/bat ~/.config/bat 
+bat cache --build
