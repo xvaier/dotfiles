@@ -31,17 +31,5 @@ vim.api.nvim_create_autocmd('TextYankPost', {
   end,
 })
 
--- set current buffer working directory when using oil
-vim.api.nvim_create_autocmd("BufEnter", {
-  pattern = "oil://*",
-  callback = function()
-    local oil = require("oil")
-    local cwd = oil.get_current_dir()
-    if cwd and vim.fn.isdirectory(cwd) == 1 then
-      vim.cmd("cd " .. vim.fn.fnameescape(cwd))
-    end
-  end,
-})
-
 -- Load plugins
 require("config.lazy")
