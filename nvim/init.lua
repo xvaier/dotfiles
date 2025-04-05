@@ -31,5 +31,14 @@ vim.api.nvim_create_autocmd('TextYankPost', {
   end,
 })
 
+-- copy relative path of current buffer to clipboard
+vim.keymap.set('n', '<leader>ya', function()
+  vim.fn.setreg('+', vim.fn.expand('%:p'))
+end, { desc = 'Copy absolute path to clipboard' })
+
+vim.keymap.set('n', '<leader>yr', function()
+  vim.fn.setreg('+', vim.fn.expand('%:.'))
+end, { desc = 'Copy relative path to clipboard' })
+
 -- Load plugins
 require("config.lazy")
