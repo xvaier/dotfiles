@@ -82,7 +82,7 @@ return {
           vim.keymap.set('n', '<leader>rn', vim.lsp.buf.rename, { desc = "Rename symbol" })
           vim.keymap.set('n', '<leader>f', function() vim.lsp.buf.format({ async = true }) end,
             { desc = "Format document" })
-          vim.keymap.set('n', '<leader>ca', vim.lsp.buf.code_action, { desc = "Show code actions" })
+          vim.keymap.set('n', '<leader>ga', vim.lsp.buf.code_action, { desc = "Show code actions" })
         end,
       })
 
@@ -106,7 +106,6 @@ return {
           }
         }
       })
-
       lspconfig.pyright.setup {
         settings = {
           pyright = {
@@ -137,7 +136,6 @@ return {
           "vue",
         },
       }
-
       lspconfig.volar.setup {
         filetypes = { 'typescript', 'javascript', 'javascriptreact', 'typescriptreact', 'vue' },
         init_options = {
@@ -157,5 +155,19 @@ return {
 
       lspconfig.terraformls.setup({})
     end
+  },
+  -- non lsp tools and linters
+  {
+    "nvimtools/none-ls.nvim",
+    dependencies = { "nvim-lua/plenary.nvim" },
+    event = { "BufReadPre", "BufNewFile" },
+    config = function()
+      local null_ls = require("null-ls")
+      null_ls.setup({
+        sources = {
+          null_ls.builtins.diagnostics.mypy.with({}),
+        },
+      })
+    end,
   }
 }
