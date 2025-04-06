@@ -87,7 +87,7 @@ return {
       })
 
       require('mason-lspconfig').setup({
-        ensure_installed = { 'volar', 'tsserver', 'tflint' },
+        ensure_installed = { 'ts_ls', 'tflint' },
         automatic_installation = {},
         handlers = {
           function(server_name)
@@ -120,7 +120,7 @@ return {
       }
 
       -- Vue
-      lspconfig.tsserver.setup {
+      lspconfig.ts_ls.setup {
         init_options = {
           plugins = {
             {
