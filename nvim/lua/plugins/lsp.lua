@@ -1,45 +1,5 @@
 return {
   {
-    'williamboman/mason.nvim',
-    lazy = false,
-    opts = {},
-  },
-  -- vim typing for vim dev
-  {
-    "folke/lazydev.nvim",
-    ft = "lua", -- only load on lua files
-    opts = {
-      library = {
-        -- See the configuration section for more details
-        -- Load luvit types when the `vim.uv` word is found
-        { path = "${3rd}/luv/library", words = { "vim%.uv" } },
-      },
-    },
-  },
-  -- Autocompletion
-  {
-    'hrsh7th/nvim-cmp',
-    event = 'InsertEnter',
-    config = function()
-      local cmp = require('cmp')
-
-      cmp.setup({
-        sources = {
-          { name = 'nvim_lsp' },
-        },
-        mapping = cmp.mapping.preset.insert({
-          ['C-Y'] = cmp.mapping.confirm { select = true },
-        }),
-        snippet = {
-          expand = function(args)
-            vim.snippet.expand(args.body)
-          end,
-        },
-      })
-    end
-  },
-  -- LSP
-  {
     'neovim/nvim-lspconfig',
     cmd = { 'LspInfo', 'LspInstall', 'LspStart' },
     event = { 'BufReadPre', 'BufNewFile' },
@@ -55,10 +15,29 @@ return {
       local lspconfig = require('lspconfig')
       local lsp_defaults = lspconfig.util.default_config
 
+      local Path = require "plenary.path"
+
+      local function find_venv(root_dir)
+        local venv_dirs = { "venv", ".venv" }
+        for i, venv_dir in ipairs(venv_dirs) do
+          local venv = Path:new(root_dir, venv_dir)
+
+          if venv:joinpath("bin"):is_dir() then
+            return tostring(venv:joinpath("bin", "python"))
+          end
+        end
+      end
+
       lsp_defaults.capabilities = vim.tbl_deep_extend(
         'force',
         lsp_defaults.capabilities,
         require('cmp_nvim_lsp').default_capabilities()
+      )
+
+      lsp_defaults.flags = vim.tbl_deep_extend(
+        'force',
+        lsp_defaults.flags,
+        { debounce_text_changes = 150 }
       )
 
       vim.diagnostic.config({
@@ -87,7 +66,7 @@ return {
       })
 
       require('mason-lspconfig').setup({
-        ensure_installed = { 'ts_ls', 'tflint' },
+        ensure_installed = { 'ts_ls', 'tflint', 'pyright' },
         automatic_installation = {},
         handlers = {
           function(server_name)
@@ -99,13 +78,6 @@ return {
 
 
       -- Python
-      lspconfig.ruff.setup({
-        init_options = {
-          settings = {
-            configurationPreference = "filesystemFirst"
-          }
-        }
-      })
       lspconfig.pyright.setup {
         settings = {
           pyright = {
@@ -117,6 +89,32 @@ return {
             },
           },
         },
+        before_init = function(params, config)
+          local venv = find_venv(config.root_dir)
+          print(vim.inspect(venv))
+          if venv ~= nil then
+            config.settings.python.pythonPath = venv
+          else
+            for root_dir in vim.fs.parents(config.root_dir) do
+              venv = find_venv(root_dir)
+              if venv ~= nil then
+                config.settings.python.pythonPath = venv
+                break
+              end
+            end
+          end
+        end
+      }
+
+      lspconfig.ruff.setup({
+        init_options = {
+          settings = {
+            configurationPreference = "filesystemFirst"
+          }
+        }
+      })
+      lspconfig.pyright.setup {
+
       }
 
       -- Vue
@@ -153,21 +151,20 @@ return {
         end,
       })
 
-      lspconfig.terraformls.setup({})
+      -- terraform
+      lspconfig.terraformls.setup {}
     end
   },
-  -- non lsp tools and linters
+  -- vim typing for vim dev
   {
-    "nvimtools/none-ls.nvim",
-    dependencies = { "nvim-lua/plenary.nvim" },
-    event = { "BufReadPre", "BufNewFile" },
-    config = function()
-      local null_ls = require("null-ls")
-      null_ls.setup({
-        sources = {
-          null_ls.builtins.diagnostics.mypy.with({}),
-        },
-      })
-    end,
+    "folke/lazydev.nvim",
+    ft = "lua", -- only load on lua files
+    opts = {
+      library = {
+        -- See the configuration section for more details
+        -- Load luvit types when the `vim.uv` word is found
+        { path = "${3rd}/luv/library", words = { "vim%.uv" } },
+      },
+    },
   }
 }

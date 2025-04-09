@@ -41,5 +41,7 @@ vim.keymap.set('n', '<leader>yr', function()
   vim.fn.setreg('+', vim.fn.expand('%:.'))
 end, { desc = 'Copy relative path to clipboard' })
 
--- Load plugins
-require("config.lazy")
+-- only load plugins if we are not in vscode
+if (not vim.g.vscode) then
+  require("config.lazy")
+end
