@@ -9,10 +9,10 @@ return {
       { "<Leader>sr", function() require("fzf-lua").live_grep() end,  desc = "Search Ripgrep" },
       { "<Leader>sl", function() require("fzf-lua").lines() end,      desc = "Search lines in open buffers" },
     },
-    config = function()
-      require("fzf-lua").setup({
+    opts = {
+      {
         winopts = { preview = { default = "bat" } }
-      })
-    end,
-  },
+      }
+    }
+  }
 }
