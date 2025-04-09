@@ -15,7 +15,7 @@ return {
       local lspconfig = require('lspconfig')
       local lsp_defaults = lspconfig.util.default_config
 
-      local Path = require "plenary.path"
+      local Path = require('plenary.path')
 
       local function find_venv(root_dir)
         local venv_dirs = { "venv", ".venv" }
@@ -36,7 +36,7 @@ return {
 
       lsp_defaults.flags = vim.tbl_deep_extend(
         'force',
-        lsp_defaults.flags,
+        lsp_defaults.flags or {},
         { debounce_text_changes = 150 }
       )
 
