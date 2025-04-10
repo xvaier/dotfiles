@@ -44,4 +44,5 @@ end, { desc = 'Copy relative path to clipboard' })
 -- only load plugins if we are not in vscode
 if (not vim.g.vscode) then
   require("config.lazy")
+  require("lsp")
 end
