@@ -1,7 +1,3 @@
--- export capabilities for autocomplete from nvim-cmp
-local capabilities = vim.lsp.protocol.make_client_capabilities()
-Capabilities = require("cmp_nvim_lsp").default_capabilities(capabilities)
-
 vim.diagnostic.config({
   virtual_text = true,
   signs = true,
@@ -23,7 +19,7 @@ vim.api.nvim_create_autocmd('LspAttach', {
     vim.keymap.set('n', '<leader>rn', vim.lsp.buf.rename, { desc = "Rename symbol" })
     vim.keymap.set('n', '<leader>f', function() vim.lsp.buf.format({ async = true }) end,
       { desc = "Format document" })
-    vim.keymap.set('n', '<leader>ga', vim.lsp.buf.code_action, { desc = "Show code actions" })
+    vim.keymap.set('n', '<leader>ca', vim.lsp.buf.code_action, { desc = "Show code actions" })
   end,
 })
 
