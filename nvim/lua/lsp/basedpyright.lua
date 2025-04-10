@@ -1,8 +1,7 @@
 vim.lsp.config['basedpyright'] = {
   cmd = { 'basedpyright-langserver', '--stdio' },
   filetypes = { 'python' },
-  root_dir = vim.fs.dirname(vim.fs.find({ 'pyproject.toml', 'setup.py', 'setup.cfg', 'requirements.txt', '.git' },
-    { upward = true })[1]),
+  root_dir = vim.fs.dirname(vim.fs.find({ 'pyproject.toml', 'setup.py', 'setup.cfg', 'requirements.txt', '.git' }, { upward = true })[1]),
   before_init = function(params, config)
     local venv = require("helpers.python").find_venv(config.root_dir)
     print(vim.inspect(venv))
