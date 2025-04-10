@@ -6,8 +6,8 @@ ln -sf ~/.dotfiles/zsh/.zimrc ~/.zimrc
 ln -sf ~/.dotfiles/zsh/.fzf.zsh ~/.fzf.zsh
 ln -sf ~/.dotfiles/tmux/.tmux.conf ~
 ln -sf ~/.dotfiles/tmux/tmux-spotify ~/.tmux/tmux-spotify
-ln -sf ~/.dotfiles/wezterm/.wezterm.lua ~
-
+ln -sfn ~/.dotfiles/ghostty ~/.config/ghostty
+ 
 # Setup bat config
 ln -sfn ~/.dotfiles/bat ~/.config/bat 
 bat cache --build
