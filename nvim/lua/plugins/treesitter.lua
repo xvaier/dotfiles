@@ -13,5 +13,5 @@ return {
       modules = {},
       ignore_install = {}
     })
-  end
+  end,
 }
