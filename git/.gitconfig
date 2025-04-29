@@ -4,10 +4,15 @@
 [commit]
 	gpgsign = true
 [alias]
-	s = status
+  s = status
+  lol = log --oneline --decorate
+  graph = log --oneline --graph --decorate
 [push]
 	autoSetupRemote = true
 [gpg]
 	format = ssh
 [gpg "ssh"]
 	program = /Applications/1Password.app/Contents/MacOS/op-ssh-sign
+[grep]
+  lineNumber = true
+  patternType = perl
