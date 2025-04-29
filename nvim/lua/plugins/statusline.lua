@@ -17,7 +17,6 @@ return {
   event = "VeryLazy",
   opts = {
     options = {
-      fmt = string.lower,
       component_separators = "",
       section_separators = "",
     },
@@ -46,11 +45,14 @@ return {
         "location",
         cond = conditions.buffer_not_empty,
       }, {
+        "progress"
+      }, {
         "encoding",
       }, {
         "lsp_status"
       }, {
-        "filename"
+        "filename",
+        path = 1
       } },
     }
   }
