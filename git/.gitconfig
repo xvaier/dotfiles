@@ -9,7 +9,7 @@
   s = status -b -s
   df = diff --color-words
   gg = grep -n --color
-  heat = blame -M -C -C
+  heat = blame -M -C -C -C
   lol = log --oneline --decorate
   graph = log --oneline --graph --decorate
   root = rev-parse --show-toplevel
