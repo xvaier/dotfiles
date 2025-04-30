@@ -13,6 +13,7 @@ return {
           "basedpyright",
           "ruff",
           "ts_ls",
+          "volar",
         },
         automatic_installation = true,
       })
