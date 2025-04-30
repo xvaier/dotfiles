@@ -1,3 +1,5 @@
+[core]
+  excludesfile = ~/.global.gitignore
 [user]
 	email = xavier.lavallee@gmail.com
 	name = Xavier Lavallee
@@ -10,12 +12,14 @@
   heat = blame -M -C -C
   lol = log --oneline --decorate
   graph = log --oneline --graph --decorate
+  root = rev-parse --show-toplevel
 [push]
 	autoSetupRemote = true
 [gpg]
 	format = ssh
 [gpg "ssh"]
 	program = /Applications/1Password.app/Contents/MacOS/op-ssh-sign
+	defaultKeyCommand = ssh-add -L
 [grep]
   lineNumber = true
   patternType = perl
