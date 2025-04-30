@@ -81,4 +81,7 @@ eval "$(pyenv init -)"
 # run .envrc file on cd
 eval "$(direnv hook zsh)"
 
+# Set ssh sock for 1Password
+export SSH_AUTH_SOCK="$HOME/.1password/agent.sock"
+
 [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
