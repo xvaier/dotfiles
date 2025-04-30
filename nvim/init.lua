@@ -1,6 +1,7 @@
 -- basic options
 vim.opt.number = true
 vim.opt.relativenumber = true
+vim.opt.signcolumn = 'number'
 vim.opt.cursorline = true
 vim.opt.undofile = true
 vim.g.mapleader = ' '

@@ -7,7 +7,6 @@
 	gpgsign = true
 [alias]
   s = status -b -s
-  df = diff --color-words
   gg = grep -n --color
   heat = blame -M -C -C -C
   lol = log --oneline --decorate
@@ -30,6 +29,8 @@
 [blame]
 	coloring = highlightRecent
   date = human
+[rerere]
+  enabled = true
 
 # Theming
 [color "blame"]
