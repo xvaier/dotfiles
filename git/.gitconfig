@@ -4,7 +4,10 @@
 [commit]
 	gpgsign = true
 [alias]
-  s = status
+  s = status -b -s
+  df = diff --color-words
+  gg = grep -n --color
+  heat = blame -M -C -C
   lol = log --oneline --decorate
   graph = log --oneline --graph --decorate
 [push]
@@ -16,3 +19,28 @@
 [grep]
   lineNumber = true
   patternType = perl
+[interactive]
+    diffFilter = delta --color-only
+[merge]
+    conflictstyle = zdiff3
+[blame]
+	coloring = highlightRecent
+  date = human
+
+# Theming
+[color "blame"]
+	highlightRecent = White,24 month ago,Magenta,12 month ago,Blue,6 month ago,Yellow,8 week ago,Red,2 week ago,bold Red
+  ui = auto
+[color "branch"]
+  current = yellow reverse
+  local = yellow
+  remote = green
+[color "diff"]
+  meta = yellow bold
+  frag = magenta bold
+  old = red bold
+  new = green bold
+[color "status"]
+  added = yellow
+  changed = green
+  untracked = cyan
