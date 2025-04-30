@@ -26,6 +26,7 @@ vim.api.nvim_create_autocmd('LspAttach', {
 -- load language server configs
 require("lsp.luals")
 require("lsp.basedpyright")
+require("lsp.ruff")
 require("lsp.terraformls")
 require("lsp.volar")
 require("lsp.tsls")
