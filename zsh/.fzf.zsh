@@ -28,4 +28,5 @@ _fzf_compgen_dir() {
 # Open in tmux popup if on tmux 
 export FZF_DEFAULT_OPTS='--tmux 90%,60%'
 
-source <(fzf --zsh)
+zvm_after_init_commands+=('source <(fzf --zsh)')
+
