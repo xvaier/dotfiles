@@ -12,6 +12,10 @@ return {
       { "<Leader>sd", function() require("fzf-lua").diagnostics_workspace() end, desc = "Search workspace diagnostics" },
       { "<Leader>ca", function() require("fzf-lua").lsp_code_actions() end,      desc = "Search code actions" },
     },
+    config = function(_, opts)
+      require("fzf-lua").setup(opts)
+      require("fzf-lua").register_ui_select()
+    end,
     opts = {
       winopts = {
         backdrop = 100,
