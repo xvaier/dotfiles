@@ -54,16 +54,6 @@ cd_to_git_root() {
 #alias cdf="cd_to_dir"
 alias cdg="cd_to_git_root"
 
-# Work aliases
-alias awsl="aws sso login"
-export WORK_DIR="$HOME/Developer/work"
-alias worklite="$WORK_DIR/bin/worklite"
-alias pl-verify="$WORK_DIR/bin/verify"
-alias pl-kubep="kubectl"
-alias pl-kubes="kubectl"
-alias pl-npm="$WORK_DIR/bin/npm"
-alias pl-format="$WORK_DIR/bin/format && $WORK_DIR/bin/format-eslint"
-
 zmodload -F zsh/terminfo +p:terminfo
 # Bind ^[[A/^[[B manually so up/down works both before and after zle-line-init
 for key ('^[[A' '^P' ${terminfo[kcuu1]}) bindkey ${key} history-substring-search-up
@@ -85,3 +75,4 @@ eval "$(direnv hook zsh)"
 export SSH_AUTH_SOCK="$HOME/.1password/agent.sock"
 
 [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
+[ -f ~/.flare.zsh ] && source ~/.flare.zsh

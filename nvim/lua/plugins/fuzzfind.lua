@@ -10,6 +10,7 @@ return {
       { "<Leader>sg", function() require("fzf-lua").live_grep() end,             desc = "Search Ripgrep" },
       { "<Leader>sl", function() require("fzf-lua").lines() end,                 desc = "Search lines in open buffers" },
       { "<Leader>sd", function() require("fzf-lua").diagnostics_workspace() end, desc = "Search workspace diagnostics" },
+      { "<Leader>sv", function() require("fzf-lua").grep_visual() end,           desc = "Search current visual selection", mode = "v" },
       { "<Leader>ca", function() require("fzf-lua").lsp_code_actions() end,      desc = "Search code actions" },
     },
     config = function(_, opts)
