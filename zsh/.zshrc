@@ -54,16 +54,6 @@ cd_to_git_root() {
 #alias cdf="cd_to_dir"
 alias cdg="cd_to_git_root"
 
-# Work aliases
-alias awsl="aws sso login"
-export LOCAL_PYRO_DIR="$HOME/Developer/flare/pyro"
-alias pyrolite="$LOCAL_PYRO_DIR/carbon/bin/pyrolite"
-alias pl-verify="$LOCAL_PYRO_DIR/bin/verify"
-alias pl-kubep="$LOCAL_PYRO_DIR/carbon/bin/kubectl-production-developer"
-alias pl-kubes="$LOCAL_PYRO_DIR/carbon/bin/kubectl-staging-developer"
-alias pl-npm="$LOCAL_PYRO_DIR/carbon/bin/npm"
-alias pl-format="$LOCAL_PYRO_DIR/bin/format && $LOCAL_PYRO_DIR/bin/format-eslint"
-
 zmodload -F zsh/terminfo +p:terminfo
 # Bind ^[[A/^[[B manually so up/down works both before and after zle-line-init
 for key ('^[[A' '^P' ${terminfo[kcuu1]}) bindkey ${key} history-substring-search-up
@@ -85,3 +75,4 @@ eval "$(direnv hook zsh)"
 export SSH_AUTH_SOCK="$HOME/.1password/agent.sock"
 
 [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
+[ -f ~/.flare.zsh ] && source ~/.flare.zsh
