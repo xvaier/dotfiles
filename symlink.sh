@@ -8,6 +8,7 @@ ln -sf ~/.dotfiles/zsh/.flare.zsh ~/.flare.zsh
 ln -sf ~/.dotfiles/tmux/.tmux.conf ~
 ln -sf ~/.dotfiles/tmux/tmux-spotify ~/.tmux/tmux-spotify
 ln -sfn ~/.dotfiles/ghostty ~/.config/ghostty
+ln -sfn ~/.dotfiles/zed ~/.config/zed
 ln -sf ~/.dotfiles/git/.gitconfig ~/.gitconfig 
 
 # Symlink the 1password ssh sock agent
