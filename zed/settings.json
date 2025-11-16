@@ -21,11 +21,7 @@
       }
     },
     "Python": {
-      "language_servers": [
-        "ty",
-        "!basedpyright",
-        "..."
-      ]
+      "language_servers": ["ty", "!basedpyright", "..."]
     }
   },
   "lsp": {
@@ -54,7 +50,7 @@
     "edit_prediction_provider": "zed"
   },
   "project_panel": {
-    "hide_gitignore": false
+    "hide_gitignore": true
   },
   "edit_predictions": {
     "mode": "subtle"
