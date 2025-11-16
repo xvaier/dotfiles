@@ -23,5 +23,25 @@
     "bindings": {
       "ctrl-.": "editor::ToggleCodeActions"
     }
+  },
+  {
+    "bindings": {
+      "ctrl-j": "workspace::ActivatePaneDown"
+    }
+  },
+  {
+    "bindings": {
+      "ctrl-h": "workspace::ActivatePaneLeft"
+    }
+  },
+  {
+    "bindings": {
+      "ctrl-l": "workspace::ActivatePaneRight"
+    }
+  },
+  {
+    "bindings": {
+      "ctrl-k": "workspace::ActivatePaneUp"
+    }
   }
 ]
