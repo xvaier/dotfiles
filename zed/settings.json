@@ -7,6 +7,52 @@
 // custom settings, run the `zed: Open Default Settings` command
 // from the command palette
 {
+  "languages": {
+    "JavaScript": {
+      "formatter": [],
+      "code_actions_on_format": {
+        "source.fixAll.eslint": true
+      }
+    },
+    "Vue.js": {
+      "format_on_save": "off",
+      "code_actions_on_format": {
+        "source.fixAll.eslint": true
+      }
+    },
+    "Python": {
+      "language_servers": [
+        "ty",
+        "!basedpyright",
+        "..."
+      ]
+    }
+  },
+  "lsp": {
+    "ty": {
+      "settings": {
+        "experimental": {
+          "autoImport": true,
+          "rename": true
+        }
+      }
+    }
+  },
+  "prettier": {
+    "allowed": false
+  },
+  "agent": {
+    "default_profile": "write",
+    "default_model": {
+      "provider": "openai",
+      "model": "gpt-5"
+    },
+    "model_parameters": []
+  },
+  "show_edit_predictions": false,
+  "features": {
+    "edit_prediction_provider": "zed"
+  },
   "project_panel": {
     "hide_gitignore": false
   },
@@ -17,7 +63,9 @@
   "relative_line_numbers": true,
   "current_line_highlight": "all",
   "terminal": {
-    "font_weight": 350.0
+    "font_family": ".ZedMono",
+    "shell": "system",
+    "font_weight": 200.0
   },
   "buffer_font_weight": 400.0,
   "buffer_line_height": "standard",
