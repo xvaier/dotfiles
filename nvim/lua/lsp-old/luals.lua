@@ -11,4 +11,6 @@ vim.lsp.config['luals'] = {
   }
 }
 
+require("lua.helpers.mason").ensure_installed('lua-language-server')
+
 vim.lsp.enable('luals')
