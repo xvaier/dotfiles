@@ -1,7 +1,6 @@
 local npm_root = require("helpers.nodejs").get_npm_global_path()
 
-vim.lsp.config['tsls'] = {
-  cmd = { "typescript-language-server", "--stdio" },
+vim.lsp.config['ts_ls'] = {
   filetypes = { "vue", "javascript", "javascriptreact", "javascript.jsx", "typescript", "typescriptreact", "typescript.tsx" },
   init_options = {
     plugins = {
@@ -12,7 +11,4 @@ vim.lsp.config['tsls'] = {
       },
     },
   },
-  settings = {}
 }
-
-vim.lsp.enable('tsls')
