@@ -22,6 +22,8 @@ return {
 					"tailwindcss",
 					"emmet_language_server",
 					"lua_ls",
+          "stylua",
+          "ocamllsp",
 				},
 				automatic_enable = true,
 				automatic_installation = false,
