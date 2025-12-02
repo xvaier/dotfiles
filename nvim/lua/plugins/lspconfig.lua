@@ -24,6 +24,7 @@ return {
 					"lua_ls",
           "stylua",
           "ocamllsp",
+          "ruff"
 				},
 				automatic_enable = true,
 				automatic_installation = false,
