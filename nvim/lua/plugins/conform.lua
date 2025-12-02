@@ -17,7 +17,6 @@ return {
 	opts = {
 		formatters_by_ft = {
 			lua = { "stylua" },
-			python = { "ruff" },
 			ocaml = { "ocamlformat" },
 		},
 		default_format_opts = {
