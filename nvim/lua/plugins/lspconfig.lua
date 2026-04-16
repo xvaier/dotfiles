@@ -22,11 +22,11 @@ return {
 					"tailwindcss",
 					"emmet_language_server",
 					"lua_ls",
-          "stylua",
-          "ocamllsp",
-          "ruff"
+					"stylua",
+					-- "ocamllsp",
+					"ruff",
 				},
-				automatic_enable = true,
+				automatic_enable = false,
 				automatic_installation = false,
 			})
 
@@ -181,6 +181,16 @@ return {
 					},
 				},
 			})
+
+      vim.lsp.enable("lua_ls")
+      vim.lsp.enable("ruff")
+      vim.lsp.enable("basedpyright")
+			vim.lsp.enable("vtsls")
+			vim.lsp.enable("vue_ls")
+			vim.lsp.enable("ts_ls")
+			vim.lsp.enable("tailwindcss")
+			vim.lsp.enable("eslint")
+
 		end,
 	},
 }
