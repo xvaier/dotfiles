@@ -76,3 +76,11 @@ export SSH_AUTH_SOCK="$HOME/.1password/agent.sock"
 
 [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
 [ -f ~/.flare.zsh ] && source ~/.flare.zsh
+export PATH="$HOME/.local/bin:$PATH"
+
+# bun completions
+[ -s "/Users/xavier.lavallee/.bun/_bun" ] && source "/Users/xavier.lavallee/.bun/_bun"
+
+# bun
+export BUN_INSTALL="$HOME/.bun"
+export PATH="$BUN_INSTALL/bin:$PATH"
