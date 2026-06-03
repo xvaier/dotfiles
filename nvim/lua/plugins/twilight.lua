@@ -1,5 +1,5 @@
 return {
-  enabled = true,
   "folke/twilight.nvim",
+  cmd = "Twilight",
   opts = {}
 }

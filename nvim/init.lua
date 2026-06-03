@@ -1,3 +1,6 @@
+-- disable Python provider — neovim searches for pynvim on every Python file open, taking ~20s
+vim.g.loaded_python3_provider = 0
+
 -- basic options
 vim.opt.number = true
 vim.opt.relativenumber = true
@@ -81,6 +84,7 @@ vim.api.nvim_create_autocmd("LspAttach", {
 		vim.keymap.set("n", "<leader>rn", vim.lsp.buf.rename, { desc = "Rename symbol" })
 	end,
 })
+
 
 -- load language server configs
 -- vim.lsp.enable("lua_ls")
