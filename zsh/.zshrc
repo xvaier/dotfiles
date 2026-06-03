@@ -20,7 +20,10 @@ ZSH_AUTOSUGGEST_MANUAL_REBIND=1
 # Set what highlighters will be used.
 ZSH_HIGHLIGHT_HIGHLIGHTERS=(main brackets)
 
-[[ -s $HOME/.nvm/nvm.sh ]] && . $HOME/.nvm/nvm.sh  # This loads NVM
+# Lazy-load NVM: load on first `nvm` call to avoid the slow `nvm use default`
+# at startup. Homebrew's node stays available immediately.
+export NVM_DIR="$HOME/.nvm"
+nvm() { unset -f nvm; [[ -s "$NVM_DIR/nvm.sh" ]] && . "$NVM_DIR/nvm.sh"; nvm "$@"; }
 
 # ------------------
 # Initialize modules
@@ -64,9 +67,12 @@ unset key
 # }}} End configuration added by Zim install
 
 # manage installed and available python versions
+# Lazy-load pyenv: shims go on PATH cheaply (so `.python-version` switching
+# works immediately); full init defers to the first `pyenv` call.
 export PYENV_ROOT="$HOME/.pyenv"
 [[ -d $PYENV_ROOT/bin ]] && export PATH="$PYENV_ROOT/bin:$PATH"
-eval "$(pyenv init -)"
+export PATH="$PYENV_ROOT/shims:$PATH"
+pyenv() { unset -f pyenv; eval "$(command pyenv init - zsh)"; pyenv "$@"; }
 
 # run .envrc file on cd
 eval "$(direnv hook zsh)"
