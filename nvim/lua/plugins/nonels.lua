@@ -1,13 +1,15 @@
-return {
-  "nvimtools/none-ls.nvim",
-  dependencies = { "nvim-lua/plenary.nvim" },
-  event = { "BufReadPre", "BufNewFile" },
-  config = function()
-    local null_ls = require("null-ls")
-    null_ls.setup({
-      sources = {
-        null_ls.builtins.diagnostics.mypy.with({}),
-      }
-    })
-  end
-}
+-- none-ls sources removed; basedpyright handles Python type checking
+-- return {
+--   "nvimtools/none-ls.nvim",
+--   dependencies = { "nvim-lua/plenary.nvim" },
+--   event = { "BufReadPre", "BufNewFile" },
+--   config = function()
+--     local null_ls = require("null-ls")
+--     null_ls.setup({
+--       sources = {
+--         null_ls.builtins.diagnostics.mypy.with({}),  -- very slow; use basedpyright instead
+--       }
+--     })
+--   end
+-- }
+return {}
