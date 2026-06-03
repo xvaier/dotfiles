@@ -115,7 +115,7 @@ return {
 					"svelte",
 					"templ",
 				},
-				{
+				settings = {
 					tailwindCSS = {
 						classAttributes = { "class", "className", "class:list", "classList", "ngClass" },
 						includeLanguages = {
@@ -182,6 +182,33 @@ return {
 				},
 			})
 
+      local python_helper = require("helpers.python")
+      vim.lsp.config("basedpyright", {
+        before_init = function(_, config)
+          local venv_python = python_helper.find_venv(config.root_dir or vim.fn.getcwd())
+          if venv_python then
+            config.settings = config.settings or {}
+            config.settings.python = config.settings.python or {}
+            config.settings.python.pythonPath = venv_python
+          end
+        end,
+        settings = {
+          basedpyright = {
+            analysis = {
+              typeCheckingMode = "standard",
+              diagnosticMode = "openFilesOnly",
+              autoImportCompletions = true,
+            },
+          },
+        },
+      })
+
+      vim.lsp.config("saturn_lsp", {
+        cmd = { vim.fn.expand("~/Developer/flare/pyro/bin/saturn-lsp") },
+        filetypes = { "yaml" },
+        root_markers = { ".git" },
+      })
+
       vim.lsp.enable("lua_ls")
       vim.lsp.enable("ruff")
       vim.lsp.enable("basedpyright")
@@ -190,6 +217,7 @@ return {
 			vim.lsp.enable("ts_ls")
 			vim.lsp.enable("tailwindcss")
 			vim.lsp.enable("eslint")
+			vim.lsp.enable("saturn_lsp")
 
 		end,
 	},
