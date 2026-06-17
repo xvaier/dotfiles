@@ -22,7 +22,7 @@ _fzf_compgen_path() {
 
 # Use fd to generate the list for directory completion
 _fzf_compgen_dir() {
-  fd --type d --hidden --follow --exclude ".git" . "$1"
+  fd --type d  --follow --exclude ".git" . "$1"
 }
 
 # Open in tmux popup if on tmux 
