@@ -17,12 +17,21 @@ return {
       ts.install(to_install)
     end
 
-    -- Highlighting is now Neovim's job; start it per buffer.
-    -- Unscoped + pcall so it no-ops for filetypes without a parser
-    -- (avoids parser-name vs filetype mismatches, e.g. vimdoc/help).
+    local available = require("nvim-treesitter.config").get_available()
     vim.api.nvim_create_autocmd("FileType", {
       callback = function(args)
-        pcall(vim.treesitter.start, args.buf)
+        local lang = vim.treesitter.language.get_lang(args.match)
+        if not (lang and vim.tbl_contains(available, lang)) then
+          return
+        end
+        ts.install(lang):await(function(err)
+          if err then
+            return
+          end
+          vim.schedule(function()
+            pcall(vim.treesitter.start, args.buf, lang)
+          end)
+        end)
       end,
     })
   end,
