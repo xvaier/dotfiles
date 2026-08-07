@@ -24,6 +24,14 @@
 		BRANCH=${1-HEAD}; \
 		git stack $BRANCH | xargs -I {} git push --force-with-lease origin {}; \
 	};f "
+	# Absolute path of the primary worktree, even when run from a linked one.
+	main-worktree = "!git worktree list --porcelain | sed -n '1s/^worktree //p'"
+	# Linked worktrees under .worktrees/, named by their path relative to it.
+	worktree-names = "!f() { \
+		ROOT=$(git main-worktree); \
+		git worktree list --porcelain \
+			| sed -n 's|^worktree '\"$ROOT\"'/.worktrees/||p'; \
+	};f "
 [push]
 	autoSetupRemote = true
 [gpg]

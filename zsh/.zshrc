@@ -82,6 +82,7 @@ export SSH_AUTH_SOCK="$HOME/.1password/agent.sock"
 
 [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
 [ -f ~/.flare.zsh ] && source ~/.flare.zsh
+[ -f ~/.git-worktree.zsh ] && source ~/.git-worktree.zsh
 export PATH="$HOME/.local/bin:$PATH"
 
 # bun completions
