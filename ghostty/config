@@ -7,9 +7,7 @@ window-padding-color = extend
 window-padding-balance = true
 window-padding-x = 3
 unfocused-split-opacity = 1
-# custom-shader = ./shaders/cursor_smear.glsl
-# custom-shader = ./shaders/crt.glsl
-# custom-shader = ./shaders/tft.glsl
+copy-on-select = false
 macos-titlebar-proxy-icon = hidden
 title = " "
 
@@ -28,3 +26,7 @@ title = " "
 # keybind = ctrl+a>p=previous_tab
 
 # keybind = super+r=reload_config
+
+# custom-shader = ./shaders/cursor_smear.glsl
+# custom-shader = ./shaders/crt.glsl
+# custom-shader = ./shaders/tft.glsl
