@@ -100,7 +100,8 @@ tick() {
   sessions="$(tmux list-sessions -F '#{session_name}' 2>/dev/null)"
   while read -r sess; do
     [ -n "$sess" ] || continue
-    blob="$blob$sess	$(format_counts $(session_counts "$rows" "$sess"))"
+    blob="$blob$sess	$(format_counts $(session_counts "$rows" "$sess"))
+"
   done <<<"$sessions"
 
   pending="$global
@@ -123,9 +124,10 @@ notify_transitions() {
   local rows="$1" next="" bucket sess sid name prev
   while IFS=$'\t' read -r bucket sess sid name; do
     [ -n "$sid" ] || continue
-    prev="$(printf '%s\n' "$prev_states" | awk -F'\t' -v k="$sid" '$1 == k { print $2; exit }')"
+    prev="$(printf '%s' "$prev_states" | awk -F'\t' -v k="$sid" '$1 == k { print $2; exit }')"
     [ -n "$prev" ] && [ "$bucket" != "$prev" ] && notify_unattached "$sess" "$bucket" "$name"
-    next="$next$sid	$bucket"
+    next="$next$sid	$bucket
+"
   done <<<"$rows"
   prev_states="$next"
 }
