@@ -18,6 +18,9 @@ return {
 		formatters_by_ft = {
 			lua = { "stylua" },
 			ocaml = { "ocamlformat" },
+			-- tofu, not terraform: only the OpenTofu CLI is installed
+			terraform = { "tofu_fmt" },
+			["terraform-vars"] = { "tofu_fmt" },
 		},
 		default_format_opts = {
 			lsp_format = "fallback",

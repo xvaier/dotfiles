@@ -25,6 +25,7 @@ return {
 					"stylua",
 					-- "ocamllsp",
 					"ruff",
+					"terraformls",
 				},
 				automatic_enable = false,
 				automatic_installation = false,
@@ -182,6 +183,14 @@ return {
 				},
 			})
 
+			vim.lsp.config("terraformls", {
+				init_options = {
+					terraform = {
+						path = vim.fn.exepath("tofu"),
+					},
+				},
+			})
+
       vim.lsp.config("saturn_lsp", {
         cmd = { vim.fn.expand("~/Developer/flare/pyro/bin/saturn-lsp") },
         filetypes = { "yaml" },
@@ -196,6 +205,7 @@ return {
 			vim.lsp.enable("ts_ls")
 			vim.lsp.enable("tailwindcss")
 			vim.lsp.enable("eslint")
+			vim.lsp.enable("terraformls")
 
 		end,
 	},
