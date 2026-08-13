@@ -1,9 +1,10 @@
 # Worktree helpers. These are shell functions rather than git aliases because a
 # subprocess can't cd its parent shell.
 #
-#   wts [name]   switch to a worktree (no arg = fzf picker)
-#   wtn <name>   create a worktree for <name> and switch to it
-#   wtd [name]   delete a worktree (no arg = fzf picker)
+#   wt [name]        switch to a worktree (no arg = fzf picker)
+#   wt -n <name>     create a worktree for existing branch <name> and switch to it
+#   wt -n -b <name>  create a worktree with a new branch <name>
+#   wt -d [name]     delete a worktree (no arg = fzf picker); -f to force
 
 # Untracked files copied from the primary worktree into a new one.
 : ${WT_COPY_FILES:=.envrc .env .env.local}
@@ -31,7 +32,7 @@ _wt_enter() {
   cd "$dir"
 }
 
-# Set up .worktrees/ on first use so `wtn` works in a fresh repo.
+# Set up .worktrees/ on first use so `wt -n` works in a fresh repo.
 _wt_init() {
   local root=$1
   [[ -d $root/.worktrees ]] || mkdir -p "$root/.worktrees" || return
@@ -41,7 +42,36 @@ _wt_init() {
   chmod +x "$setup"
 }
 
-wts() {
+wt() {
+  local new= branch= delete= force=
+  while [[ $1 == -* ]]; do
+    case $1 in
+      -n) new=1 ;;
+      -b) new=1 branch=1 ;;
+      -d) delete=1 ;;
+      -f) force=1 ;;
+      *) echo "usage: wt [-n [-b] | -d [-f]] [name]" >&2; return 1 ;;
+    esac
+    shift
+  done
+
+  if [[ -n $delete && -n $new ]]; then
+    echo "wt: -d cannot be combined with -n/-b" >&2; return 1
+  fi
+  if [[ -n $force && -z $delete ]]; then
+    echo "wt: -f only applies to -d" >&2; return 1
+  fi
+
+  if [[ -n $new ]]; then
+    _wt_new "$branch" "$@"
+  elif [[ -n $delete ]]; then
+    _wt_delete "$force" "$@"
+  else
+    _wt_switch "$@"
+  fi
+}
+
+_wt_switch() {
   local root name
   root=$(_wt_root) || return
 
@@ -59,9 +89,9 @@ wts() {
   _wt_enter "$dir" "$root"
 }
 
-wtn() {
-  local name=$1
-  [[ -z $name ]] && { echo "usage: wtn <branch>" >&2; return 1 }
+_wt_new() {
+  local branch=$1 name=$2
+  [[ -z $name ]] && { echo "usage: wt -n [-b] <branch>" >&2; return 1 }
 
   local root dir
   root=$(_wt_root) || return
@@ -70,9 +100,7 @@ wtn() {
   [[ -e $dir ]] && { echo "already exists: $dir" >&2; return 1 }
   _wt_init "$root" || return
 
-  if git show-ref --verify --quiet "refs/heads/$name"; then
-    git worktree add "$dir" "$name" || return
-  else
+  if [[ -n $branch ]]; then
     local base
     base=origin/$(git default-branch 2>/dev/null)
     git rev-parse --verify --quiet "$base" >/dev/null || base=HEAD
@@ -80,6 +108,12 @@ wtn() {
     # `git push` targets the default branch. push.autoSetupRemote creates
     # origin/<name> on first push instead.
     git worktree add --no-track -b "$name" "$dir" "$base" || return
+  else
+    git show-ref --verify --quiet "refs/heads/$name" || {
+      echo "no such branch: $name (use wt -b $name to create)" >&2
+      return 1
+    }
+    git worktree add "$dir" "$name" || return
   fi
 
   local f
@@ -94,16 +128,13 @@ wtn() {
   "$root/.worktrees/setup.sh"
 }
 
-wtd() {
-  local force=
-  [[ $1 == -f ]] && { force=--force; shift }
+_wt_delete() {
+  local force=${1:+--force} name=$2
 
-  local root name
+  local root
   root=$(_wt_root) || return
 
-  if (( $# )); then
-    name=$1
-  else
+  if [[ -z $name ]]; then
     name=$(git worktree-names | fzf --height 40% --reverse --prompt='delete worktree> ') || return
   fi
 
@@ -116,7 +147,7 @@ wtd() {
   [[ ${PWD:A}/ == ${dir:A}/* ]] && { cd "$root" || return }
 
   git worktree remove $force "$dir" || {
-    echo "worktree has changes; use: wtd -f $name" >&2
+    echo "worktree has changes; use: wt -d -f $name" >&2
     return 1
   }
 
