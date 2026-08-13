@@ -18,6 +18,10 @@ return {
       require("fzf-lua").register_ui_select()
     end,
     opts = {
+      files = {
+        cwd_prompt = false,
+        prompt = "> ",
+      },
       winopts = {
         backdrop = 100,
         height = 0.95,
