@@ -52,10 +52,10 @@
 [rerere]
   enabled = true
 
-# Theming
+[color]
+  ui = auto
 [color "blame"]
 	highlightRecent = White,24 month ago,Magenta,12 month ago,Blue,6 month ago,Yellow,8 week ago,Red,2 week ago,bold Red
-  ui = auto
 [color "branch"]
   current = yellow reverse
   local = yellow
