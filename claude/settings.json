@@ -1,0 +1,71 @@
+{
+  "apiKeyHelper": "echo '-'",
+  "env": {
+    "ANTHROPIC_BASE_URL": "https://lacuna.flare.ts.net/claude-code/",
+    "ENABLE_TOOL_SEARCH": "true",
+    "ENABLE_CLAUDEAI_MCP_SERVERS": "false",
+    "CLAUDE_CODE_TMUX_TRUECOLOR": "true"
+  },
+  "attribution": {
+    "commit": "",
+    "pr": ""
+  },
+  "permissions": {
+    "deny": [
+      "NotebookEdit",
+      "PowerShell",
+      "CronCreate",
+      "CronDelete",
+      "CronList",
+      "EndConversation",
+      "PushNotification",
+      "RemoteTrigger",
+      "ShareOnboardingGuide",
+      "Artifact"
+    ],
+    "defaultMode": "auto"
+  },
+  "model": "claude-fable-5[1m]",
+  "hooks": {
+    "Stop": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "~/.dotfiles/tmux/claude-rename-window.sh",
+            "async": true
+          }
+        ]
+      }
+    ],
+    "SessionStart": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "~/.dotfiles/tmux/claude-rename-window.sh",
+            "async": true
+          }
+        ]
+      }
+    ]
+  },
+  "extraKnownMarketplaces": {
+    "flare-claude-skills": {
+      "source": {
+        "source": "git",
+        "url": "git@gitlab.com:flaresystems/flare-claude-skills.git"
+      }
+    }
+  },
+  "effortLevel": "medium",
+  "promptSuggestionEnabled": false,
+  "awaySummaryEnabled": false,
+  "tui": "default",
+  "skipWorkflowUsageWarning": true,
+  "theme": "dark-ansi",
+  "preferredNotifChannel": "terminal_bell",
+  "autoCompactEnabled": false,
+  "switchModelsOnFlag": false,
+  "skipAutoPermissionPrompt": true
+}
