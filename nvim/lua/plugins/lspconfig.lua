@@ -182,6 +182,22 @@ return {
 				},
 			})
 
+			local eslint_on_attach = vim.lsp.config.eslint.on_attach
+			vim.lsp.config("eslint", {
+				settings = {
+					-- conform owns formatting; eslint only fixes lint rules
+					format = false,
+				},
+				on_attach = function(client, bufnr)
+					eslint_on_attach(client, bufnr)
+					vim.api.nvim_create_autocmd("BufWritePre", {
+						buffer = bufnr,
+						command = "LspEslintFixAll",
+						desc = "Apply eslint fixes on save",
+					})
+				end,
+			})
+
 			vim.lsp.config("terraformls", {
 				init_options = {
 					terraform = {
@@ -201,7 +217,6 @@ return {
       vim.lsp.enable("ty")
 			vim.lsp.enable("vtsls")
 			vim.lsp.enable("vue_ls")
-			vim.lsp.enable("ts_ls")
 			vim.lsp.enable("tailwindcss")
 			vim.lsp.enable("eslint")
 			vim.lsp.enable("terraformls")
