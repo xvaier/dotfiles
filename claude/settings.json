@@ -24,6 +24,13 @@
     "defaultMode": "auto"
   },
   "model": "opus[1m]",
+  "statusLine": {
+    "type": "command",
+    "command": "~/.dotfiles/claude/statusline.sh",
+    "padding": 0,
+    "refreshInterval": 5,
+    "hideVimModeIndicator": true
+  },
   "effortLevel": "medium",
   "promptSuggestionEnabled": false,
   "awaySummaryEnabled": false,
