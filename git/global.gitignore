@@ -1,9 +1,11 @@
+# Machine-wide only; repo-local ignores belong in that repo's .gitignore.
+
+# Routinely holds secrets.
 .envrc
-flare.zsh
+
+# setup.sh is a per-repo hook worth sharing.
+.worktrees/*
+!.worktrees/setup.sh
 
 **/.claude/settings.local.json
-
-# Worktrees live here, but their setup script is committed.
-.worktrees/*
-
 **/.claude/.cc-writes/
