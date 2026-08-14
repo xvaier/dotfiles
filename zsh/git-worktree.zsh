@@ -1,5 +1,4 @@
-# Worktree helpers. These are shell functions rather than git aliases because a
-# subprocess can't cd its parent shell.
+# Functions, not git aliases, because a subprocess can't cd its parent shell.
 #
 #   wt [name]        switch to a worktree (no arg = fzf picker)
 #   wt -n <name>     create a worktree for existing branch <name> and switch to it
@@ -24,15 +23,14 @@ _wt_direnv_allowed() {
 _wt_enter() {
   local dir=$1 root=$2
   # Allow before the cd, so direnv's chpwd hook loads instead of complaining.
-  # Trusting a copied .envrc on sight would defeat direnv's point, so inherit
-  # the decision: allow only what the primary worktree already allows.
+  # Trusting a copied .envrc on sight would defeat direnv, so inherit the
+  # primary worktree's decision instead.
   if [[ -f $dir/.envrc ]] && ! _wt_direnv_allowed "$dir" && _wt_direnv_allowed "$root"; then
     direnv allow "$dir"
   fi
   cd "$dir"
 }
 
-# Set up .worktrees/ on first use so `wt -n` works in a fresh repo.
 _wt_init() {
   local root=$1
   [[ -d $root/.worktrees ]] || mkdir -p "$root/.worktrees" || return
@@ -123,8 +121,7 @@ _wt_new() {
 
   _wt_enter "$dir" "$root" || return
 
-  # Per-repo hook for anything else the worktree needs (deps, links, secrets).
-  # Runs after the cd so it sees the worktree's direnv environment.
+  # Per-repo hook (deps, links, secrets). After the cd, so it sees direnv's env.
   "$root/.worktrees/setup.sh"
 }
 
