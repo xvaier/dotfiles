@@ -1,2 +1,6 @@
 .DS_Store
-zed/prompts/
+
+# Ignored here, not in global.gitignore, so a fresh clone hides them
+# before symlink.sh has run.
+zsh/flare.zsh
+git/gitconfig-flare
