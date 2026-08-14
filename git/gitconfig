@@ -74,3 +74,7 @@
 	smudge = git-lfs smudge -- %f
 	process = git-lfs filter-process
 	required = true
+
+# gitconfig-flare is gitignored; the include is a no-op without it.
+[includeIf "gitdir:~/Developer/flare/"]
+	path = ~/.gitconfig-flare
