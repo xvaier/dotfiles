@@ -1,7 +1,5 @@
 {
-  "apiKeyHelper": "echo '-'",
   "env": {
-    "ANTHROPIC_BASE_URL": "https://lacuna.flare.ts.net/claude-code/",
     "ENABLE_TOOL_SEARCH": "true",
     "ENABLE_CLAUDEAI_MCP_SERVERS": "false",
     "CLAUDE_CODE_TMUX_TRUECOLOR": "true"
@@ -49,14 +47,6 @@
         ]
       }
     ]
-  },
-  "extraKnownMarketplaces": {
-    "flare-claude-skills": {
-      "source": {
-        "source": "git",
-        "url": "git@gitlab.com:flaresystems/flare-claude-skills.git"
-      }
-    }
   },
   "effortLevel": "medium",
   "promptSuggestionEnabled": false,
