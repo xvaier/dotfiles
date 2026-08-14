@@ -1,38 +1,58 @@
 #!/bin/bash
-# Install packages first with: brew bundle --file=~/.dotfiles/Brewfile
-mkdir -p ~/.config/
-ln -sfn ~/.dotfiles/nvim ~/.config/nvim
+# See README for bootstrap order.
+set -euo pipefail
 
-# zsh
-ln -sf ~/.dotfiles/zsh/zshrc ~/.zshrc
-ln -sf ~/.dotfiles/zsh/zprofile ~/.zprofile
-ln -sf ~/.dotfiles/zsh/zshenv ~/.zshenv
-ln -sf ~/.dotfiles/zsh/zimrc ~/.zimrc
-ln -sf ~/.dotfiles/zsh/fzf.zsh ~/.fzf.zsh
-ln -sf ~/.dotfiles/zsh/git-worktree.zsh ~/.git-worktree.zsh
-# Work-specific, gitignored; only present on work machines
-[ -f ~/.dotfiles/zsh/flare.zsh ] && ln -sf ~/.dotfiles/zsh/flare.zsh ~/.flare.zsh
+DOTFILES="$HOME/.dotfiles"
 
-ln -sf ~/.dotfiles/tmux/tmux.conf ~/.tmux.conf
-ln -sfn ~/.dotfiles/ghostty ~/.config/ghostty
-ln -sf ~/.dotfiles/git/gitconfig ~/.gitconfig
-ln -sf ~/.dotfiles/git/global.gitignore ~/.global.gitignore
+link() {
+  local src="$DOTFILES/$1" dest="$HOME/$2"
+  if [ ! -e "$src" ]; then
+    echo "symlink.sh: missing source, skipping: $src" >&2
+    return 0
+  fi
+  # ln -sfn replaces a symlink but nests inside a real dir, so clear that first.
+  [ -L "$dest" ] || rm -rf "$dest"
+  mkdir -p "$(dirname "$dest")"
+  ln -sfn "$src" "$dest"
+}
 
-mkdir -p ~/.ssh
-ln -sf ~/.dotfiles/ssh/config ~/.ssh/config
+link_optional() {
+  [ -e "$DOTFILES/$1" ] || return 0
+  link "$1" "$2"
+}
 
-# Claude Code (individual files only; ~/.claude also holds sessions and caches)
-mkdir -p ~/.claude
-ln -sf ~/.dotfiles/claude/settings.json ~/.claude/settings.json
-ln -sf ~/.dotfiles/claude/CLAUDE.md ~/.claude/CLAUDE.md
-ln -sf ~/.dotfiles/claude/keybindings.json ~/.claude/keybindings.json
+link nvim .config/nvim
+link ghostty .config/ghostty
+link bat .config/bat
 
-# Symlink the 1password ssh sock agent
-mkdir -p ~/.1password && ln -sfn ~/Library/Group\ Containers/2BUA8C4S2C.com.1password/t/agent.sock ~/.1password/agent.sock
+link zsh/zshrc .zshrc
+link zsh/zprofile .zprofile
+link zsh/zshenv .zshenv
+link zsh/zimrc .zimrc
+link zsh/fzf.zsh .fzf.zsh
+link zsh/git-worktree.zsh .git-worktree.zsh
 
-# tmux plugin manager
-[ -d ~/.tmux/plugins/tpm ] || ~/.dotfiles/tmux/install_tpm.sh
+link tmux/tmux.conf .tmux.conf
 
-# Setup bat config
-ln -sfn ~/.dotfiles/bat ~/.config/bat
-bat cache --build
+link git/gitconfig .gitconfig
+link git/global.gitignore .global.gitignore
+
+link ssh/config .ssh/config
+
+# Individual files only; ~/.claude also holds sessions and caches.
+link claude/settings.json .claude/settings.json
+link claude/CLAUDE.md .claude/CLAUDE.md
+link claude/keybindings.json .claude/keybindings.json
+
+link_optional zsh/flare.zsh .flare.zsh
+link_optional git/gitconfig-flare .gitconfig-flare
+
+# The only place the 1Password team-ID path is written down.
+mkdir -p "$HOME/.1password"
+ln -sfn "$HOME/Library/Group Containers/2BUA8C4S2C.com.1password/t/agent.sock" \
+  "$HOME/.1password/agent.sock"
+
+# Plugins themselves install with `prefix + I`.
+if [ ! -d "$HOME/.tmux/plugins/tpm" ]; then
+  git clone --depth 1 https://github.com/tmux-plugins/tpm "$HOME/.tmux/plugins/tpm"
+fi
