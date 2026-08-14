@@ -85,16 +85,6 @@ vim.api.nvim_create_autocmd("LspAttach", {
 	end,
 })
 
-
--- load language server configs
--- vim.lsp.enable("lua_ls")
--- vim.lsp.enable("basedpyright")
--- vim.lsp.enable("ruff")
--- vim.lsp.enable("terraformls")
--- vim.lsp.enable("vue_ls")
--- vim.lsp.enable("ts_ls")
--- vim.lsp.enable("clangd")
-
 -- only load plugins if we are not in vscode
 if not vim.g.vscode then
 	require("config.lazy")
