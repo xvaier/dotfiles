@@ -23,7 +23,6 @@ return {
 					"emmet_language_server",
 					"lua_ls",
 					"stylua",
-					-- "ocamllsp",
 					"ruff",
 					"terraformls",
 				},

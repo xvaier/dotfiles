@@ -17,7 +17,6 @@ return {
 	opts = {
 		formatters_by_ft = {
 			lua = { "stylua" },
-			ocaml = { "ocamlformat" },
 			-- tofu, not terraform: only the OpenTofu CLI is installed
 			terraform = { "tofu_fmt" },
 			["terraform-vars"] = { "tofu_fmt" },
@@ -28,11 +27,6 @@ return {
 		format_on_save = {
 			timeout_ms = 1000,
 			lsp_format = "fallback",
-		},
-		formatters = {
-			shfmt = {
-				append_args = { "-i", "2" },
-			},
 		},
 	},
 }
