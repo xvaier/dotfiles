@@ -44,6 +44,8 @@
   patternType = perl
 [interactive]
     diffFilter = delta --color-only
+[delta]
+    syntax-theme = Catppuccin Mocha
 [merge]
     conflictstyle = zdiff3
 [blame]
