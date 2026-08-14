@@ -101,6 +101,7 @@ tick() {
   sessions="$(tmux list-sessions -F '#{session_name}' 2>/dev/null)"
   while read -r sess; do
     [ -n "$sess" ] || continue
+    # shellcheck disable=SC2046  # deliberate: splits into format_counts' 3 args
     blob="$blob$sess	$(format_counts $(counts_for "$rows" 2 "$sess"))
 "
   done <<<"$sessions"
@@ -110,6 +111,7 @@ tick() {
   windows="$(tmux list-windows -a -F '#{window_id}' 2>/dev/null)"
   while read -r win; do
     [ -n "$win" ] || continue
+    # shellcheck disable=SC2046  # deliberate: splits into format_counts' 3 args
     wblob="$wblob$win	$(format_counts $(counts_for "$rows" 3 "$win"))
 "
   done <<<"$windows"
