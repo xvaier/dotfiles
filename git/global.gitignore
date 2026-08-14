@@ -1,0 +1,9 @@
+.envrc
+flare.zsh
+
+**/.claude/settings.local.json
+
+# Worktrees live here, but their setup script is committed.
+.worktrees/*
+
+**/.claude/.cc-writes/
