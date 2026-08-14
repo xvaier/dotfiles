@@ -34,11 +34,13 @@
   "effortLevel": "medium",
   "promptSuggestionEnabled": false,
   "awaySummaryEnabled": false,
-  "tui": "default",
+  "tui": "fullscreen",
   "skipWorkflowUsageWarning": true,
   "theme": "dark-ansi",
+  "editorMode": "vim",
   "preferredNotifChannel": "terminal_bell",
-  "autoCompactEnabled": false,
+  "autoCompactEnabled": true,
   "switchModelsOnFlag": false,
+  "inputNeededNotifEnabled": true,
   "skipAutoPermissionPrompt": true
 }
