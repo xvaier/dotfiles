@@ -32,6 +32,8 @@ if [ -z "$dir" ]; then
   fi
 fi
 
+# Expand a tilde the user typed literally. It's a pattern, not a path to expand.
+# shellcheck disable=SC2088
 case "$dir" in
   "~") dir="$HOME" ;;
   "~/"*) dir="$HOME/${dir#\~/}" ;;
