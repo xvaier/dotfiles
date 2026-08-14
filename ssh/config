@@ -1,8 +1,4 @@
-# Host gitlab.com
-#   Hostname altssh.gitlab.com
-#   User git
-#   Port 443
-
 Host *
-  IdentityAgent "~/Library/Group Containers/2BUA8C4S2C.com.1password/t/agent.sock"
+  # Shim created by symlink.sh; zshrc points SSH_AUTH_SOCK at the same path.
+  IdentityAgent ~/.1password/agent.sock
   SetEnv TERM=xterm-256color
