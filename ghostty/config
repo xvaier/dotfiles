@@ -1,7 +1,7 @@
 font-family = Lilex
 font-variation = wght=400
 font-size = 16
-theme = catppuccin-mocha
+theme = Catppuccin Mocha
 keybind = global:cmd+grave_accent=toggle_quick_terminal
 window-padding-color = extend
 window-padding-balance = true
@@ -12,22 +12,4 @@ cursor-style = bar
 macos-titlebar-proxy-icon = hidden
 title = " "
 
-# keybind = ctrl+h=goto_split:left
-# keybind = ctrl+j=goto_split:bottom
-# keybind = ctrl+k=goto_split:top
-# keybind = ctrl+l=goto_split:right
-
-# keybind = ctrl+a>h=new_split:left
-# keybind = ctrl+a>j=new_split:down
-# keybind = ctrl+a>k=new_split:up
-# keybind = ctrl+a>l=new_split:right
-# keybind = ctrl+a>f=toggle_split_zoom
-
-# keybind = ctrl+a>n=next_tab
-# keybind = ctrl+a>p=previous_tab
-
-# keybind = super+r=reload_config
-
-# custom-shader = ./shaders/cursor_smear.glsl
-# custom-shader = ./shaders/crt.glsl
-# custom-shader = ./shaders/tft.glsl
+# Splits and tabs are driven from tmux, so they stay unbound here.
