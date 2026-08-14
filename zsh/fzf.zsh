@@ -2,7 +2,6 @@ if [[ ! "$PATH" == */opt/homebrew/opt/fzf/bin* ]]; then
   PATH="${PATH:+${PATH}:}/opt/homebrew/opt/fzf/bin"
 fi
 
-# Advanced completion by command
 _fzf_comprun() {
   local command=$1
   shift
@@ -15,18 +14,15 @@ _fzf_comprun() {
   esac
 }
 
-# Use fd to generate the list for path completion
 _fzf_compgen_path() {
  fd --hidden --follow --exclude ".git" . "$1"
 }
 
-# Use fd to generate the list for directory completion
 _fzf_compgen_dir() {
   fd --type d  --follow --exclude ".git" . "$1"
 }
 
-# Open in tmux popup if on tmux 
 export FZF_DEFAULT_OPTS='--tmux 90%,60%'
 
+# zsh-vi-mode resets keymaps after startup, so bind fzf's widgets after it.
 zvm_after_init_commands+=('source <(fzf --zsh)')
-
