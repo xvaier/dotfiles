@@ -17,7 +17,7 @@ _fzf_comprun() {
 
 # Use fd to generate the list for path completion
 _fzf_compgen_path() {
- dfd --hidden --follow --exclude ".git" . "$1"
+ fd --hidden --follow --exclude ".git" . "$1"
 }
 
 # Use fd to generate the list for directory completion
