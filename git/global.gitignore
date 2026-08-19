@@ -4,7 +4,7 @@
 .envrc
 
 # setup.sh is a per-repo hook worth sharing.
-.worktrees/*
+.worktrees/
 !.worktrees/setup.sh
 
 **/.claude/settings.local.json
