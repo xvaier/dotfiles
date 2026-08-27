@@ -1,5 +1,4 @@
 #!/bin/bash
-# See README for bootstrap order.
 set -euo pipefail
 
 DOTFILES="$HOME/.dotfiles"
@@ -10,7 +9,6 @@ link() {
     echo "symlink.sh: missing source, skipping: $src" >&2
     return 0
   fi
-  # ln -sfn replaces a symlink but nests inside a real dir, so clear that first.
   [ -L "$dest" ] || rm -rf "$dest"
   mkdir -p "$(dirname "$dest")"
   ln -sfn "$src" "$dest"
@@ -39,7 +37,7 @@ link git/global.gitignore .global.gitignore
 
 link ssh/config .ssh/config
 
-# Individual files only; ~/.claude also holds sessions and caches.
+# ~/.claude also holds sessions and caches. don't link the whole folder
 link claude/settings.json .claude/settings.json
 link claude/CLAUDE.md .claude/CLAUDE.md
 link claude/keybindings.json .claude/keybindings.json
@@ -47,7 +45,6 @@ link claude/keybindings.json .claude/keybindings.json
 link_optional zsh/lib/flare.zsh .flare.zsh
 link_optional git/gitconfig-flare .gitconfig-flare
 
-# The only place the 1Password team-ID path is written down.
 mkdir -p "$HOME/.1password"
 ln -sfn "$HOME/Library/Group Containers/2BUA8C4S2C.com.1password/t/agent.sock" \
   "$HOME/.1password/agent.sock"
