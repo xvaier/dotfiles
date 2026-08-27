@@ -1,8 +1,6 @@
 zmodule environment
-zmodule git
 zmodule input
 zmodule termtitle
-zmodule utility
 
 # duration-info and git-info feed asciiship, the prompt.
 zmodule duration-info
