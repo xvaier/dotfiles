@@ -56,20 +56,20 @@ else
     ctx_color="$RED"
 fi
 
-context_info="${ctx_color}󰧚 ${pct}%${RESET}"
+context_info="${ctx_color} ${pct}%${RESET}"
 
 if [ -n "$cost_usd" ] && [ "$cost_usd" != "0" ] && [ "$cost_usd" != "null" ]; then
     cost_fmt=$(printf "%.2f" "$cost_usd" 2>/dev/null || echo "0.00")
-    cost_display="${SUBTEXT} ${CURRENCY}${cost_fmt}${RESET}"
+    cost_display="${SUBTEXT}${CURRENCY}${cost_fmt}${RESET}"
 else
-    cost_display="${OVERLAY} ${CURRENCY}0.00${RESET}"
+    cost_display="${OVERLAY}${CURRENCY}0.00${RESET}"
 fi
 
 output="${LAVENDER}${model}${RESET}"
 output="${output} ${context_info}"
 output="${output} ${cost_display}"
 if [ -n "$branch" ]; then
-    output="${output} ${MAUVE} ${branch}${RESET}"
+    output="${output}${MAUVE}  ${branch}${RESET}"
     [ -n "$dirty" ] && output="${output}${PEACH}${dirty}${RESET}"
 fi
 
