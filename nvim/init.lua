@@ -80,4 +80,5 @@ vim.api.nvim_create_autocmd("LspAttach", {
 if not vim.g.vscode then
 	require("config.lazy")
 	require("config.marks")
+	require("config.tmux-navigate")
 end
