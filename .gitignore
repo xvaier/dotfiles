@@ -2,6 +2,6 @@
 
 # Ignored here, not in global.gitignore, so a fresh clone hides them
 # before symlink.sh has run.
-zsh/flare.zsh
+zsh/lib/flare.zsh
 git/gitconfig-flare
 claude/settings.json

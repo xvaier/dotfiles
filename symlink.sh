@@ -29,8 +29,8 @@ link zsh/zshrc .zshrc
 link zsh/zprofile .zprofile
 link zsh/zshenv .zshenv
 link zsh/zimrc .zimrc
-link zsh/fzf.zsh .fzf.zsh
-link zsh/git-worktree.zsh .git-worktree.zsh
+link zsh/lib/fzf.zsh .fzf.zsh
+link zsh/lib/git-worktree.zsh .git-worktree.zsh
 
 link tmux/tmux.conf .tmux.conf
 
@@ -44,7 +44,7 @@ link claude/settings.json .claude/settings.json
 link claude/CLAUDE.md .claude/CLAUDE.md
 link claude/keybindings.json .claude/keybindings.json
 
-link_optional zsh/flare.zsh .flare.zsh
+link_optional zsh/lib/flare.zsh .flare.zsh
 link_optional git/gitconfig-flare .gitconfig-flare
 
 # The only place the 1Password team-ID path is written down.
