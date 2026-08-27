@@ -67,8 +67,6 @@ brew "odin"
 brew "zig"
 
 # --- Version & package managers ---
-# Manage multiple Node.js versions
-brew "nvm"
 # Python version management
 brew "pyenv"
 # Pyenv plugin to manage virtualenv
