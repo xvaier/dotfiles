@@ -51,8 +51,3 @@ link_optional git/gitconfig-flare .gitconfig-flare
 mkdir -p "$HOME/.1password"
 ln -sfn "$HOME/Library/Group Containers/2BUA8C4S2C.com.1password/t/agent.sock" \
   "$HOME/.1password/agent.sock"
-
-# Plugins themselves install with `prefix + I`.
-if [ ! -d "$HOME/.tmux/plugins/tpm" ]; then
-  git clone --depth 1 https://github.com/tmux-plugins/tpm "$HOME/.tmux/plugins/tpm"
-fi
