@@ -1,4 +1,8 @@
 export EDITOR=nvim
 export VISUAL=nvim
 
+# Render man pages with bat; col strips groff's backspace overstrikes
+export MANROFFOPT="-c"
+export MANPAGER="sh -c 'col -bx | bat -l man -p'"
+
 [ -f "$HOME/.cargo/env" ] && . "$HOME/.cargo/env"
