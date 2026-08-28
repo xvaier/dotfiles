@@ -12,12 +12,10 @@
     "version": "LuaJIT"
   },
   "diagnostics": {
-    "globals": ["vim"]
+    "globals": ["vim"],
+    "disable": ["unused-local"]
   },
   "completion": {
     "callSnippet": "Replace"
-  },
-    "diagnostics.disable": [
-        "unused-local"
-    ]
+  }
 }
