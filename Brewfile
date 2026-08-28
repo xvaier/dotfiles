@@ -35,6 +35,12 @@ brew "tmux"
 # --- Editors ---
 # Ambitious Vim-fork focused on extensibility and agility
 brew "neovim"
+# Language server for Lua
+brew "lua-language-server"
+# Opinionated Lua code formatter
+brew "stylua"
+# Language server for Tailwind CSS
+brew "tailwindcss-language-server"
 
 # --- Git ---
 # Distributed revision control system
@@ -95,6 +101,8 @@ brew "shellcheck"
 brew "semgrep"
 # Extremely fast Python type checker, written in Rust
 brew "ty"
+# Extremely fast Python linter and formatter, written in Rust (also nvim's ruff LSP)
+brew "ruff"
 # Generate clients, server & docs from an OpenAPI spec (v2, v3)
 brew "openapi-generator"
 
