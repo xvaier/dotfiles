@@ -1,0 +1,7 @@
+vim.keymap.set("n", "<leader>ta", "<Cmd>$tabnew<CR>", { desc = "Tab: New at end" })
+vim.keymap.set("n", "<leader>tc", "<Cmd>tabclose<CR>", { desc = "Tab: Close" })
+vim.keymap.set("n", "<leader>to", "<Cmd>tabonly<CR>", { desc = "Tab: Close others" })
+vim.keymap.set("n", "<leader>tn", "<Cmd>tabnext<CR>", { desc = "Tab: Next" })
+vim.keymap.set("n", "<leader>tp", "<Cmd>tabprevious<CR>", { desc = "Tab: Previous" })
+vim.keymap.set("n", "<leader>tmp", "<Cmd>-tabmove<CR>", { desc = "Tab: Move left" })
+vim.keymap.set("n", "<leader>tmn", "<Cmd>+tabmove<CR>", { desc = "Tab: Move right" })
