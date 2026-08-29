@@ -5,3 +5,4 @@
 zsh/lib/flare.zsh
 git/gitconfig-flare
 claude/settings.json
+claude/settings.local.json
