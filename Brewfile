@@ -55,6 +55,8 @@ brew "gh"
 brew "glab"
 # Simple terminal UI for git commands
 brew "lazygit"
+# Code review TUI with vim keybindings
+brew "tuicr"
 
 # --- Languages & toolchains ---
 # Open source programming language to build simple/reliable/efficient software

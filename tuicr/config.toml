@@ -1,0 +1,18 @@
+theme = "catppuccin-mocha"
+editor = "nvim"
+relative_line_numbers = true
+scroll_offset = 8
+
+# Matches nvim's mapleader. Trades space-as-page-down for the leader shortcuts.
+leader = " "
+
+# Unified diff and mouse support are already the defaults, and delta in
+# gitconfig reads diffs the same way, so neither is set here.
+
+# Colours are the catppuccin-mocha palette used by delta in gitconfig.
+comment_types = [
+  { id = "issue", definition = "must fix before merge", color = "#f38ba8" },
+  { id = "suggestion", definition = "optional improvement", color = "#89b4fa" },
+  { id = "question", definition = "ask for clarification", color = "#f9e2af" },
+  { id = "nit", label = "nitpick", definition = "small style tweak", color = "#fab387" },
+]
