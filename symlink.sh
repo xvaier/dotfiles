@@ -22,6 +22,7 @@ link_optional() {
 link nvim .config/nvim
 link ghostty .config/ghostty
 link bat .config/bat
+link tuicr .config/tuicr
 
 link zsh/zshrc .zshrc
 link zsh/zprofile .zprofile
