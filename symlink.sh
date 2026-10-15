@@ -29,7 +29,6 @@ link zsh/zprofile .zprofile
 link zsh/zshenv .zshenv
 link zsh/zimrc .zimrc
 link zsh/lib/fzf.zsh .fzf.zsh
-link zsh/lib/git-worktree.zsh .git-worktree.zsh
 
 link tmux/tmux.conf .tmux.conf
 
