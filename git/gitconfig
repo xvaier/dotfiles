@@ -1,6 +1,9 @@
 [core]
   excludesfile = ~/.global.gitignore
   pager = delta
+  # a per-repo watcher daemon instead of an lstat of every file on each status
+  fsmonitor = true
+  untrackedCache = true
 [user]
 	email = xavier.lavallee@gmail.com
 	name = Xavier Lavallee
