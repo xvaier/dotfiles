@@ -70,7 +70,7 @@ brew "elixir"
 brew "lua"
 # Open-source, cross-platform JavaScript runtime environment
 brew "node"
-# Fast all-in-one JavaScript runtime; builds the wt binary
+# Fast all-in-one JavaScript runtime
 brew "oven-sh/bun/bun"
 # Programming language with focus on simplicity, performance and modern systems
 brew "odin"

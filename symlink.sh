@@ -42,13 +42,17 @@ link claude/settings.json .claude/settings.json
 link claude/CLAUDE.md .claude/CLAUDE.md
 link claude/keybindings.json .claude/keybindings.json
 
-# wt is compiled, not linked as source; the binary stays out of git
-if command -v bun >/dev/null; then
-  (cd "$DOTFILES/wt" && bun install --frozen-lockfile --silent && bun run --silent build)
-  link wt/dist/wt .local/bin/wt
-  link wt/dist/wt.1 .local/share/man/man1/wt.1
+# wt lives in its own repo; cargo fetches it over ssh with git's credentials
+if command -v cargo >/dev/null; then
+  for f in "$HOME/.local/bin/wt" "$HOME/.local/share/man/man1/wt.1"; do
+    if [ -L "$f" ]; then rm "$f"; fi
+  done
+  CARGO_NET_GIT_FETCH_WITH_CLI=true cargo install --quiet --locked \
+    --git ssh://git@github.com/xvaier/wt.git --root "$HOME/.local"
+  mkdir -p "$HOME/.local/share/man/man1"
+  "$HOME/.local/bin/wt" __man > "$HOME/.local/share/man/man1/wt.1"
 else
-  echo "symlink.sh: bun missing, skipping wt" >&2
+  echo "symlink.sh: cargo missing, skipping wt" >&2
 fi
 
 link_optional zsh/lib/flare.zsh .flare.zsh
