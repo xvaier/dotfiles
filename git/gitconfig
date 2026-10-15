@@ -35,6 +35,8 @@
 	};f "
 [push]
 	autoSetupRemote = true
+[wt]
+	stackPrefix = xavier/stack
 [gpg]
 	format = ssh
 [gpg "ssh"]
