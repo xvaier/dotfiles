@@ -9,3 +9,8 @@
 
 **/.claude/settings.local.json
 **/.claude/.cc-writes/
+
+# Mac stuff
+.DS_Store
+.localized
+__MACOSX/
