@@ -19,7 +19,7 @@
 [push]
 	autoSetupRemote = true
 [wt]
-	stackPrefix = xavier/stack
+	branchPrefix = xavierlavallee
 [gpg]
 	format = ssh
 [gpg "ssh"]
