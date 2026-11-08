@@ -136,6 +136,8 @@ brew "pgcli"
 brew "pspg"
 
 # --- Security ---
+# Block credentials from entering Git history
+brew "gitleaks"
 # Scan for endpoints, secrets, API keys, file extensions, tokens and more
 brew "cariddi"
 # Multi-platform software reverse engineering framework

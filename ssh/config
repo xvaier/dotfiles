@@ -1,3 +1,6 @@
+# Host-specific options come first: SSH uses the first value obtained.
+Include ~/.ssh/config.local
+
 Host *
   # Shim created by symlink.sh; zshrc points SSH_AUTH_SOCK at the same path.
   IdentityAgent ~/.1password/agent.sock

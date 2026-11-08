@@ -6,3 +6,10 @@ zsh/lib/flare.zsh
 git/gitconfig-flare
 agents/claude/settings.json
 agents/claude/settings.local.json
+
+# Machine-specific configuration and publication guard patterns.
+ssh/config.local
+pi/proxmox.local.json
+privacy-patterns.local
+# Legacy location; may contain account or tool configuration.
+claude/
