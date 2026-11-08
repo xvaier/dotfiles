@@ -20,7 +20,6 @@ link_optional() {
 }
 
 link nvim .config/nvim
-link ghostty .config/ghostty
 link rex .config/rex
 link bat .config/bat
 link tuicr .config/tuicr
