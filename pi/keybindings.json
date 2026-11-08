@@ -1,0 +1,12 @@
+{
+  "$schema": "https://pi.dev/schemas/keybindings.schema.json",
+  "app.editor.external": "ctrl+g",
+  "app.tools.expand": "ctrl+o",
+  "app.model.select": "alt+p",
+  "app.thinking.toggle": "alt+t",
+  "app.thinking.cycle": [],
+  "app.session.tree": "ctrl+t",
+  "app.session.resume": "ctrl+r",
+  "tui.editor.deleteToLineStart": ["ctrl+u", "super+backspace"],
+  "tui.altScreen.halfPageUp": ["alt+u"]
+}

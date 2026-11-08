@@ -19,13 +19,12 @@ link_optional() {
   link "$1" "$2"
 }
 
-# Gitignored files live in 1Password, not git. Fetch any this machine lacks
-# before linking; .githooks/pre-commit uploads local changes.
 fetch_from_1password() {
   command -v op >/dev/null || return 0
   local path title
   while IFS='|' read -r path title; do
     [[ -z "$path" || "$path" == \#* || -e "$DOTFILES/$path" ]] && continue
+    mkdir -p "$(dirname "$DOTFILES/$path")"
     op document get "$title" --vault Private --out-file "$DOTFILES/$path" >/dev/null 2>&1 ||
       echo "symlink.sh: couldn't fetch '$title' from 1Password, skipping" >&2
   done < "$DOTFILES/1password-files"
@@ -51,11 +50,20 @@ link git/gitconfig .gitconfig
 link git/global.gitignore .global.gitignore
 
 link ssh/config .ssh/config
+link_optional ssh/config.local .ssh/config.local
 
 # ~/.claude also holds sessions and caches. don't link the whole folder
 link agents/claude/settings.json .claude/settings.json
 link agents/AGENTS.md .claude/CLAUDE.md
 link agents/claude/keybindings.json .claude/keybindings.json
+
+# ~/.pi also holds auth, sessions, caches, and installs. don't link the whole folder
+link_optional pi/proxmox.local.json .pi/agent/proxmox.local.json
+link pi/settings.json .pi/agent/settings.json
+link pi/keybindings.json .pi/agent/keybindings.json
+link pi/AGENTS.md .pi/agent/AGENTS.md
+link pi/extensions .pi/agent/extensions
+link pi/themes .pi/agent/themes
 
 link_optional zsh/lib/flare.zsh .flare.zsh
 link_optional git/gitconfig-flare .gitconfig-flare
