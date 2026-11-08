@@ -1,0 +1,31 @@
+#!/usr/bin/env zsh
+# service-run NAME COMMAND
+# Runs COMMAND in an interactive zsh (so shell aliases work), reports
+# its state to Rex with the Program Status Protocol (OSC 7501), and offers a
+# restart when it exits.
+
+name=$1
+command=$2
+
+b64() { print -rn -- $1 | base64 }
+
+report() {
+  printf '\e]7501;state=%s:app=service:title=%s:msg=%s\a' $1 $(b64 $name) $(b64 $2)
+}
+
+while true; do
+  report working $command
+  # ctrl+c stops the service, not this loop
+  trap : INT
+  zsh -ic $command
+  code=$?
+  trap - INT
+
+  if (( code == 0 )); then
+    report done "exited"
+  else
+    report error "exited with status $code"
+  fi
+  print -P "\n%F{yellow}$name exited ($code).%f Enter restarts it, ctrl+c closes the pane."
+  read -r || exit $code
+done

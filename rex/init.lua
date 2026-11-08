@@ -1,11 +1,7 @@
 -- Migrated from ~/.tmux.conf (prefix ctrl+space)
 
-local terminal = "com.superlogical.terminal"
-
-local function foreground(block_id)
-  local p = rex.block.call(terminal, "process", { block_id = block_id })
-  return p and p.foreground or {}
-end
+local term = require("terminal")
+local foreground = term.foreground
 
 -- Same test as tmux's @is_vim: ^g?(view|n?vim?x?)(diff)?$, ignoring case
 local function is_vim(name)
@@ -37,7 +33,7 @@ rex.action{
       bounds = { (1 - s) / 2, (1 - s) / 2, s, s },
       focus  = true,
       layout = rex.layout.block{
-        flavor  = "com.superlogical.terminal.shell",
+        flavor  = term.shell,
         options = { command = args.command, cwd = foreground(ctx.block_id).cwd },
       },
     }
@@ -101,3 +97,7 @@ rex.bind("ctrl+space>shift+e", "pane.balance")
 rex.bind("ctrl+space>shift+;", "client.palette.toggle")
 rex.bind("ctrl+space>f", "pane.float")
 rex.bind("ctrl+space>/", "client.find.open")
+
+require("review")
+require("services")
+require("ci")

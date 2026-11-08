@@ -1,0 +1,22 @@
+#!/usr/bin/env zsh
+# review-relay AGENT_BLOCK [TUICR_ARGS...]
+# Runs tuicr. If it copied a review, pastes the review into AGENT_BLOCK and
+# presses enter. Quitting tuicr without exporting sends nothing.
+
+agent=$1
+shift
+
+before=$(pbpaste)
+tuicr "$@"
+# tuicr may copy with OSC 52, which the Rex client applies asynchronously
+sleep 0.3
+review=$(pbpaste)
+
+[[ -n $review && $review != $before ]] || exit 0
+
+# Bracketed paste, so the agent's input box receives it as one paste
+# instead of submitting at the first newline
+data=$'\e[200~'$review$'\e[201~'
+rex block call -b $agent write "$(jq -n --arg data $data '{data: $data}')" >/dev/null || exit 1
+sleep 0.2
+rex send-key -b $agent enter
