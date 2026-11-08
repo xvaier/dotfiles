@@ -1,0 +1,29 @@
+#!/usr/bin/env bash
+# Upload gitignored files listed in 1password-files when they've changed since
+# the last sync. Never blocks the commit: a failed upload only prints a warning.
+set -uo pipefail
+
+root=$(git rev-parse --show-toplevel)
+cache="$(git rev-parse --git-dir)/1password-sync"
+mkdir -p "$cache"
+
+command -v op >/dev/null || exit 0
+
+while IFS='|' read -r path title; do
+  [[ -z "$path" || "$path" == \#* ]] && continue
+  file="$root/$path"
+  [ -f "$file" ] || continue
+
+  stamp="$cache/${path//\//_}.sha"
+  sum=$(shasum -a 256 "$file" | cut -d' ' -f1)
+  [ "$sum" = "$(cat "$stamp" 2>/dev/null)" ] && continue
+
+  if op document edit "$title" "$file" --vault Private >/dev/null 2>&1; then
+    echo "$sum" >| "$stamp"
+    echo "1password: synced $path"
+  else
+    echo "1password: couldn't sync $path to '$title'" >&2
+  fi
+done < "$root/1password-files"
+
+exit 0

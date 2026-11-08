@@ -19,6 +19,21 @@ link_optional() {
   link "$1" "$2"
 }
 
+# Gitignored files live in 1Password, not git. Fetch any this machine lacks
+# before linking; .githooks/pre-commit uploads local changes.
+fetch_from_1password() {
+  command -v op >/dev/null || return 0
+  local path title
+  while IFS='|' read -r path title; do
+    [[ -z "$path" || "$path" == \#* || -e "$DOTFILES/$path" ]] && continue
+    op document get "$title" --vault Private --out-file "$DOTFILES/$path" >/dev/null 2>&1 ||
+      echo "symlink.sh: couldn't fetch '$title' from 1Password, skipping" >&2
+  done < "$DOTFILES/1password-files"
+}
+
+fetch_from_1password
+git -C "$DOTFILES" config core.hooksPath .githooks
+
 link nvim .config/nvim
 link rex .config/rex
 link bat .config/bat
