@@ -22,7 +22,5 @@ _fzf_compgen_dir() {
   fd --type d --hidden --follow --exclude ".git" . "$1"
 }
 
-export FZF_DEFAULT_OPTS='--tmux 90%,60%'
-
 # zsh-vi-mode resets keymaps after startup, so bind fzf's widgets after it.
 zvm_after_init_commands+=('source <(fzf --zsh)')
