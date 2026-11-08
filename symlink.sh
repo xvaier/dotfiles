@@ -39,9 +39,9 @@ link git/global.gitignore .global.gitignore
 link ssh/config .ssh/config
 
 # ~/.claude also holds sessions and caches. don't link the whole folder
-link claude/settings.json .claude/settings.json
-link claude/CLAUDE.md .claude/CLAUDE.md
-link claude/keybindings.json .claude/keybindings.json
+link agents/claude/settings.json .claude/settings.json
+link agents/AGENTS.md .claude/CLAUDE.md
+link agents/claude/keybindings.json .claude/keybindings.json
 
 # wt lives in its own repo; cargo fetches it over ssh with git's credentials
 if command -v cargo >/dev/null; then

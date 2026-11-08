@@ -4,5 +4,5 @@
 # before symlink.sh has run.
 zsh/lib/flare.zsh
 git/gitconfig-flare
-claude/settings.json
-claude/settings.local.json
+agents/claude/settings.json
+agents/claude/settings.local.json
