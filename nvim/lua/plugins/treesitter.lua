@@ -1,5 +1,7 @@
 local ts = require("nvim-treesitter")
 
+require("config.rust-sql").setup()
+
 local function warn(msg, err)
   vim.schedule(function()
     local detail = type(err) == "string" and err or vim.inspect(err)
@@ -16,6 +18,8 @@ local ensure_installed = {
   "python",
   "terraform",
   "hcl",
+  "rust",
+  "sql",
 }
 local installed = require("nvim-treesitter.config").get_installed()
 local to_install = vim.tbl_filter(function(parser)

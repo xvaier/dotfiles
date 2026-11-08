@@ -76,6 +76,10 @@ brew "oven-sh/bun/bun"
 brew "odin"
 # Programming language designed for robustness, optimality, and clarity
 brew "zig"
+# Safe, concurrent, practical language
+brew "rust"
+# Language server for Rust
+brew "rust-analyzer"
 
 # --- Version & package managers ---
 # Python version management

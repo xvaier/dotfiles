@@ -51,3 +51,4 @@ export SSH_AUTH_SOCK="$HOME/.1password/agent.sock"
 [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
 [ -f ~/.flare.zsh ] && source ~/.flare.zsh
 export PATH="$HOME/.local/bin:$PATH"
+export PATH="$PATH:$HOME/.cargo/bin"
