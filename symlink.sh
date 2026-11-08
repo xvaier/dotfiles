@@ -58,12 +58,12 @@ link agents/AGENTS.md .claude/CLAUDE.md
 link agents/claude/keybindings.json .claude/keybindings.json
 
 # ~/.pi also holds auth, sessions, caches, and installs. don't link the whole folder
-link_optional pi/proxmox.local.json .pi/agent/proxmox.local.json
-link pi/settings.json .pi/agent/settings.json
-link pi/keybindings.json .pi/agent/keybindings.json
-link pi/AGENTS.md .pi/agent/AGENTS.md
-link pi/extensions .pi/agent/extensions
-link pi/themes .pi/agent/themes
+link_optional agents/pi/proxmox.local.json .pi/agent/proxmox.local.json
+link agents/pi/settings.json .pi/agent/settings.json
+link agents/pi/keybindings.json .pi/agent/keybindings.json
+link agents/AGENTS.md .pi/agent/AGENTS.md
+link agents/pi/extensions .pi/agent/extensions
+link agents/pi/themes .pi/agent/themes
 
 link_optional zsh/lib/flare.zsh .flare.zsh
 link_optional git/gitconfig-flare .gitconfig-flare

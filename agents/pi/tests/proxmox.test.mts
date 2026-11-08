@@ -1,4 +1,4 @@
-// Run: node --test ~/.dotfiles/pi/tests/proxmox.test.mts (Node 22.18+).
+// Run: node --test ~/.dotfiles/agents/pi/tests/proxmox.test.mts (Node 22.18+).
 import assert from "node:assert/strict";
 import { execFileSync } from "node:child_process";
 import { existsSync, mkdtempSync, readFileSync, rmSync, statSync, writeFileSync } from "node:fs";

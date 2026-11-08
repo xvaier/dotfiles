@@ -4,7 +4,7 @@ Pi tools for inspecting and managing a configured Proxmox host and its LXC conta
 
 ## Private configuration
 
-Copy `pi/proxmox.example.json` to `pi/proxmox.local.json` and set `sshTarget` to your SSH destination. `symlink.sh` links the private file to `~/.pi/agent/proxmox.local.json`. It is ignored by Git and included in the 1Password backup manifest.
+Copy `agents/pi/proxmox.example.json` to `agents/pi/proxmox.local.json` and set `sshTarget` to your SSH destination. `symlink.sh` links the private file to `~/.pi/agent/proxmox.local.json`. It is ignored by Git and included in the 1Password backup manifest.
 
 Alternatively set `PROXMOX_SSH_HOST` for one Pi process. The environment takes precedence over the JSON file. There is no default destination: missing or invalid configuration fails before launching SSH. A custom `PI_CODING_AGENT_DIR` changes the configuration directory.
 
@@ -43,7 +43,7 @@ Discover node names at `/nodes`; never assume the DNS hostname is the node name.
 ## Tests
 
 ```sh
-node --test pi/tests/proxmox.test.mts
+node --test agents/pi/tests/proxmox.test.mts
 ```
 
 Requires Node 22.18+ and an installed Pi package. Set `PI_NODE_MODULES` for nonstandard installations. Tests use the real extension loader and local stand-in processes; they never contact a Proxmox host.
