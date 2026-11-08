@@ -1,7 +1,5 @@
 {
   "$schema": "https://pi.dev/schemas/keybindings.schema.json",
-  "app.editor.external": "ctrl+g",
-  "app.tools.expand": "ctrl+o",
   "app.model.select": "alt+p",
   "app.thinking.toggle": "alt+t",
   "app.thinking.cycle": [],

@@ -1,8 +1,11 @@
 import assert from "node:assert/strict";
 import { test } from "node:test";
 import extension, { quoteMarkdown } from "../extensions/quote-final-response.ts";
-import { getMarkdownTheme } from "@earendil-works/pi-coding-agent";
+import { getMarkdownTheme, initTheme } from "@earendil-works/pi-coding-agent";
 import { Markdown, visibleWidth } from "@earendil-works/pi-tui";
+
+// Markdown list bullets read the active theme.
+initTheme("dark", false);
 
 test("completed answers are quoted without changing commentary, thinking or user input", () => {
   const handlers = new Map<string, Function>();

@@ -1,4 +1,4 @@
-// Run with Pi's bundled jiti; NODE_PATH must point at Pi's node_modules.
+// Run with tests/run.sh so @earendil-works packages resolve from the Pi install.
 import assert from "node:assert/strict";
 import { execFileSync } from "node:child_process";
 import { mkdtempSync, rmSync, writeFileSync } from "node:fs";
@@ -12,8 +12,8 @@ const plain = (s: string) => s.replace(/\x1b\[[0-9;]*m/g, "");
 const usage = (input: number, output: number, cacheRead: number, cost: number) => ({ input, output, cacheRead, cacheWrite: 0, cost: { total: cost } });
 
 test("context colours match Claude thresholds", () => {
-  for (const [pct, code] of [[undefined, 90], [null, 90], [0, 90], [39, 32], [40, 33], [60, 33], [61, 31]] as const) {
-    assert.equal(contextColour(pct), code);
+  for (const [pct, colour] of [[undefined, "dim"], [null, "dim"], [0, "dim"], [39, "success"], [40, "warning"], [60, "warning"], [61, "error"]] as const) {
+    assert.equal(contextColour(pct), colour);
   }
 });
 
@@ -42,7 +42,8 @@ test("footer renders usage, real git dirtiness, compaction and narrow layouts", 
       getContextUsage: () => ({ percent, contextWindow: 272000 }),
       sessionManager: { getEntries: () => entries, getSessionId: () => "id", getLeafId: () => String(entries.length), getEntryCount: () => entries.length },
       ui: { setFooter: (factory: Function) => {
-        component = factory({ requestRender: () => renderRequests++ }, {}, {
+        const theme = { fg: (_name: string, text: string) => `\x1b[36m${text}\x1b[0m` };
+        component = factory({ requestRender: () => renderRequests++ }, theme, {
           getGitBranch: () => "main", getAvailableProviderCount: () => 2,
           onBranchChange: () => () => { unsubscribed = true; },
         });

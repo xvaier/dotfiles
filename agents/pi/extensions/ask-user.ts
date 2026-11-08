@@ -105,16 +105,4 @@ export default function (pi: ExtensionAPI) {
       return new Text(answer ? theme.fg("success", `✓ ${answer.answers.join(", ")}`) : theme.fg("warning", "Cancelled — no selection"), 0, 0);
     },
   });
-
-  pi.registerCommand("select-demo", {
-    description: "Try the interactive question menu (/select-demo multi for checkboxes)",
-    async handler(args, ctx) {
-      const result = await askUser(ctx, {
-        question: args.trim() === "multi" ? "Select any demo options" : "Select one demo option",
-        options: [{ label: "First option" }, { label: "Second option", description: "An option with a description" }],
-        multiSelect: args.trim() === "multi",
-      });
-      ctx.ui.notify(result ? result.answers.join(", ") : "Cancelled", "info");
-    },
-  });
 }

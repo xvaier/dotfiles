@@ -1,7 +1,5 @@
 import type { ExtensionAPI } from "@earendil-works/pi-coding-agent";
 
-const glyph = "";
-
 const dangerousBash = [
   /\brm\s+(-[A-Za-z]*r[A-Za-z]*f?|-[A-Za-z]*f[A-Za-z]*r|--recursive)\b/,
   /\bsudo\b/,
@@ -12,10 +10,6 @@ const dangerousBash = [
 ];
 
 export default function (pi: ExtensionAPI) {
-  pi.on("session_start", async (_event, ctx) => {
-    ctx.ui.setHiddenThinkingLabel(`${glyph} thinking`);
-  });
-
   pi.on("tool_call", async (event, ctx) => {
     if (event.toolName !== "bash") return undefined;
 

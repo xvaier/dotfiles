@@ -2,17 +2,14 @@ import { homedir } from "node:os";
 import type { ExtensionAPI, ExtensionContext } from "@earendil-works/pi-coding-agent";
 import { truncateToWidth, visibleWidth } from "@earendil-works/pi-tui";
 
-const colour = {
-  folder: 36, branch: 35, model: 94, dirty: 33,
-  green: 32, red: 31, dim: 90, text: 37,
-};
-const paint = (code: number, text: string) => `\x1b[${code}m${text}\x1b[0m`;
+type Paint = (colour: string, text: string) => string;
+
 const clean = (text: string) => text.replace(/[\x00-\x1f\x7f-\x9f]/g, " ");
 const tokens = (n: number) => n < 1000 ? `${n}` : n < 1e6 ? `${+(n / 1000).toFixed(1)}k` : `${+(n / 1e6).toFixed(1)}M`;
 
 export function contextColour(percent: number | null | undefined) {
-  if (!percent) return colour.dim;
-  return percent < 40 ? colour.green : percent <= 60 ? colour.dirty : colour.red;
+  if (!percent) return "dim";
+  return percent < 40 ? "success" : percent <= 60 ? "warning" : "error";
 }
 
 function usageStats(ctx: ExtensionContext) {
@@ -59,7 +56,8 @@ export default function (pi: ExtensionAPI) {
     if (context.mode !== "tui") return;
     ctx = context;
     cachedKey = "";
-    ctx.ui.setFooter((tui, _theme, footerData) => {
+    ctx.ui.setFooter((tui, theme, footerData) => {
+      const paint: Paint = (colour, text) => theme.fg(colour as Parameters<typeof theme.fg>[0], text);
       requestRender = () => tui.requestRender();
       const unsubscribe = footerData.onBranchChange(requestRender);
       return {
@@ -78,16 +76,16 @@ export default function (pi: ExtensionAPI) {
           const pct = usage?.percent;
           const capacity = usage?.contextWindow ?? ctx.model?.contextWindow;
           const context = paint(contextColour(pct), ` ${pct == null ? "?" : Math.round(Math.min(100, Math.max(0, pct))) + "%"}${capacity ? "/" + tokens(capacity) : ""}`);
-          const auto = pi.getSettings().compaction?.enabled !== false ? paint(colour.dim, "auto") : "";
+          const auto = pi.getSettings().compaction?.enabled !== false ? paint("dim", "auto") : "";
           const model = ctx.model;
-          const modelText = paint(colour.model, clean(model?.id ?? "no-model"));
-          const thinking = model?.reasoning ? paint(colour.dim, `· ${pi.getThinkingLevel()}`) : "";
+          const modelText = paint("accent", clean(model?.id ?? "no-model"));
+          const thinking = model?.reasoning ? paint("dim", `· ${pi.getThinkingLevel()}`) : "";
           const subscription = model && (model.provider === "kimi-coding" || ctx.modelRegistry.isUsingOAuth(model));
-          const cost = paint(stats.cost ? colour.text : colour.dim, `$${stats.cost.toFixed(2)}`)
-            + (subscription ? paint(colour.dim, " sub") : "");
+          const cost = paint(stats.cost ? "text" : "dim", `$${stats.cost.toFixed(2)}`)
+            + (subscription ? paint("dim", " sub") : "");
           const branch = footerData.getGitBranch() || detached;
-          const git = branch ? paint(colour.branch, ` ${clean(branch)}`) + (dirty ? paint(colour.dirty, " ●") : "") : "";
-          const provider = model && footerData.getAvailableProviderCount() > 1 ? paint(colour.dim, `(${clean(model.provider)})`) : "";
+          const git = branch ? paint("mdLink", ` ${clean(branch)}`) + (dirty ? paint("warning", " ●") : "") : "";
+          const provider = model && footerData.getAvailableProviderCount() > 1 ? paint("dim", `(${clean(model.provider)})`) : "";
           const join = (parts: string[]) => parts.filter(Boolean).join("  ");
           let first = join([modelText, thinking, context, auto, cost, git]);
           if (provider && visibleWidth(first + " " + provider) <= width) first += " " + provider;
@@ -98,9 +96,9 @@ export default function (pi: ExtensionAPI) {
 
           const home = homedir();
           const cwd = ctx.cwd === home ? "~" : ctx.cwd.startsWith(home + "/") ? "~" + ctx.cwd.slice(home.length) : ctx.cwd;
-          const counts = paint(colour.dim, `↑${tokens(stats.input)} ↓${tokens(stats.output)}`);
-          const cache = paint(colour.dim, [stats.cacheRead ? `R${tokens(stats.cacheRead)}` : "", stats.cacheWrite ? `W${tokens(stats.cacheWrite)}` : "", stats.hit != null && (stats.cacheRead || stats.cacheWrite) ? `CH${stats.hit.toFixed(1)}%` : ""].filter(Boolean).join("  "));
-          const path = paint(colour.folder, clean(cwd));
+          const counts = paint("dim", `↑${tokens(stats.input)} ↓${tokens(stats.output)}`);
+          const cache = paint("dim", [stats.cacheRead ? `R${tokens(stats.cacheRead)}` : "", stats.cacheWrite ? `W${tokens(stats.cacheWrite)}` : "", stats.hit != null && (stats.cacheRead || stats.cacheWrite) ? `CH${stats.hit.toFixed(1)}%` : ""].filter(Boolean).join("  "));
+          const path = paint("muted", clean(cwd));
           let second = join([path, counts, cache]);
           if (visibleWidth(second) > width) second = join([path, counts]);
           if (visibleWidth(second) > width) second = join([truncateToWidth(path, Math.max(0, width - visibleWidth(counts) - 2), "…"), counts]);
