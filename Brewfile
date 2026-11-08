@@ -1,6 +1,5 @@
 # Taps
 tap "daveshanley/vacuum"
-tap "homebrew/services"
 tap "oven-sh/bun"
 
 # --- Shell & core utilities ---
@@ -144,8 +143,6 @@ brew "pspg"
 brew "gitleaks"
 # Scan for endpoints, secrets, API keys, file extensions, tokens and more
 brew "cariddi"
-# Multi-platform software reverse engineering framework
-brew "ghidra"
 # Port scanning utility for large networks
 brew "nmap"
 # Penetration testing for SQL injection and database servers
@@ -212,8 +209,6 @@ cask "bruno"
 cask "discord"
 # App to build and share containerised applications and microservices
 cask "docker-desktop"
-# Software reverse engineering (SRE) suite of tools
-cask "ghidra"
 # Terminal emulator that uses platform-native UI and GPU acceleration
 cask "ghostty"
 # Utility to hide menu bar items
