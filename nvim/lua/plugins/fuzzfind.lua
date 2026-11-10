@@ -41,6 +41,9 @@ local pickers = {
   { "<Leader>sm", fzf.marks, "Search marks" },
   { "<Leader>sd", fzf.diagnostics_workspace, "Search workspace diagnostics" },
   { "<Leader>sy", fzf.registers, "Search registers" },
+  { "<Leader>sw", fzf.grep_cword, "Search word under cursor" },
+  { "<Leader>sh", fzf.helptags, "Search help" },
+  { "<Leader>sk", fzf.keymaps, "Search keymaps" },
   { "<Leader>ca", fzf.lsp_code_actions, "Search code actions" },
 }
 

@@ -8,6 +8,9 @@ require("gitsigns").setup({
 
 vim.keymap.set("n", "<Leader>gcn", "<Cmd>Gitsigns next_hunk<CR>", { desc = "Go to next change" })
 vim.keymap.set("n", "<Leader>gcp", "<Cmd>Gitsigns prev_hunk<CR>", { desc = "Go to previous change" })
+vim.keymap.set("n", "<Leader>gcv", "<Cmd>Gitsigns preview_hunk_inline<CR>", { desc = "View change" })
+vim.keymap.set({ "n", "v" }, "<Leader>gcs", "<Cmd>Gitsigns stage_hunk<CR>", { desc = "Stage change" })
+vim.keymap.set({ "n", "v" }, "<Leader>gcr", "<Cmd>Gitsigns reset_hunk<CR>", { desc = "Reset change" })
 vim.keymap.set("n", "<Leader>b", "<Cmd>Gitsigns toggle_current_line_blame<CR>", { desc = "Toggle git blame" })
 
 vim.keymap.set("n", "<leader>gb", function()
