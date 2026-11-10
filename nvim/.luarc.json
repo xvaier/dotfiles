@@ -1,11 +1,6 @@
 {
   "version": "Lua 5.1",
   "workspace": {
-    "library": [
-      "${3rd}/luv/library",
-      "${3rd}/busted/library",
-      "${workspace}/lua"
-    ],
     "checkThirdParty": false
   },
   "runtime": {

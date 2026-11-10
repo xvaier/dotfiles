@@ -8,6 +8,8 @@ return {
     Lua = {
       workspace = {
         checkThirdParty = false,
+        -- types for vim.*; kept out of .luarc.json because the path is per machine
+        library = { vim.env.VIMRUNTIME .. "/lua" },
       },
       completion = {
         callSnippet = "Replace",
