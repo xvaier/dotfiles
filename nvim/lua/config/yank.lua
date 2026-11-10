@@ -24,6 +24,15 @@ vim.keymap.set("n", "<leader>yf", function()
   vim.fn.setreg("+", table.concat(lines, "\n"))
 end, { desc = "Copy relative path and buffer contents to clipboard" })
 
+-- "path:start-end" then the selected lines, the way agents reference code
+vim.keymap.set("v", "<leader>yf", function()
+  vim.cmd.normal({ "\27", bang = true }) -- leave visual mode so '< and '> are set
+  local first, last = vim.fn.line("'<"), vim.fn.line("'>")
+  local lines = vim.api.nvim_buf_get_lines(0, first - 1, last, false)
+  table.insert(lines, 1, ("%s:%d-%d"):format(vim.fn.expand("%:."), first, last))
+  vim.fn.setreg("+", table.concat(lines, "\n"))
+end, { desc = "Copy relative path with line range and selection" })
+
 vim.keymap.set("n", "<leader>yb", function()
   vim.fn.setreg("+", table.concat(buffer_lines(), "\n"))
 end, { desc = "Copy buffer contents to clipboard" })
