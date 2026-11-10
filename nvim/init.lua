@@ -1,6 +1,7 @@
 require("config.options")
 require("config.ui")
 require("config.yank")
+require("config.reload")
 require("config.tabs")
 require("config.lsp")
 require("config.completion")

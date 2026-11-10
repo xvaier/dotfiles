@@ -1,6 +1,8 @@
 require("mini.icons").setup({})
 
 require("oil").setup({
+  -- agents create files while a listing is open
+  watch_for_changes = true,
   keymaps = {
     ["g?"] = { "actions.show_help", mode = "n" },
     ["<C-s>"] = false,
