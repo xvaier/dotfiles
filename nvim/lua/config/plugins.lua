@@ -22,10 +22,10 @@ vim.pack.add({
   { src = gh("nvim-treesitter/nvim-treesitter"), version = "main" },
   -- stay on tagged releases
   { src = gh("akinsho/git-conflict.nvim"), version = vim.version.range("*") },
+  { src = gh("stevearc/oil.nvim"), version = vim.version.range("*") },
   gh("neovim/nvim-lspconfig"),
   gh("echasnovski/mini.icons"),
   gh("echasnovski/mini.ai"),
-  gh("stevearc/oil.nvim"),
   gh("stevearc/conform.nvim"),
   gh("lewis6991/gitsigns.nvim"),
   gh("nvim-lua/plenary.nvim"),
