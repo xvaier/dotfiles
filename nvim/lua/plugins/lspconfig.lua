@@ -8,6 +8,7 @@ vim.lsp.enable({
   "vue_ls",
   "tailwindcss",
   "eslint",
+  "biome",
   "emmet_language_server",
   "terraformls",
 })
