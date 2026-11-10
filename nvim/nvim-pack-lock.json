@@ -29,6 +29,10 @@
       "rev": "221ce6b2d999187044529f49da6554a92f740a96",
       "src": "https://github.com/nvim-lualine/lualine.nvim"
     },
+    "mini.ai": {
+      "rev": "98a5d73937930a2bb08129020601ab8d5016d706",
+      "src": "https://github.com/echasnovski/mini.ai"
+    },
     "mini.icons": {
       "rev": "98faae31e9be1cc054ae63485e58ceb185efcad0",
       "src": "https://github.com/echasnovski/mini.icons"

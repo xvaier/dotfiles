@@ -24,6 +24,7 @@ vim.pack.add({
   { src = gh("akinsho/git-conflict.nvim"), version = vim.version.range("*") },
   gh("neovim/nvim-lspconfig"),
   gh("echasnovski/mini.icons"),
+  gh("echasnovski/mini.ai"),
   gh("stevearc/oil.nvim"),
   gh("stevearc/conform.nvim"),
   gh("lewis6991/gitsigns.nvim"),
@@ -48,5 +49,6 @@ require("plugins.todo-comments")
 require("plugins.flash")
 require("plugins.fuzzfind")
 require("plugins.surround")
+require("plugins.textobjects")
 require("plugins.keyhints")
 require("plugins.statusline")
