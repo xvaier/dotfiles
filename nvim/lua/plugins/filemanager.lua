@@ -20,4 +20,6 @@ require("oil").setup({
   },
 })
 
+require("config.oil-git")
+
 vim.keymap.set("n", "-", "<Cmd>Oil<CR>", { desc = "Open file manager" })

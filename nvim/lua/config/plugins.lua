@@ -25,7 +25,6 @@ vim.pack.add({
   gh("neovim/nvim-lspconfig"),
   gh("echasnovski/mini.icons"),
   gh("stevearc/oil.nvim"),
-  gh("malewicz1337/oil-git.nvim"),
   gh("stevearc/conform.nvim"),
   gh("lewis6991/gitsigns.nvim"),
   gh("nvim-lua/plenary.nvim"),
