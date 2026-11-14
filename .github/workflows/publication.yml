@@ -13,6 +13,9 @@ jobs:
       - name: Check tracked private files and machine paths
         run: python3 scripts/check-publication.py
       - name: Scan history for credentials
-        # Fixed scanner version; read-only checkout, no repository secrets.
+        # Betterleaks v1.10.0, pinned by digest; read-only checkout and no live credential validation.
         run: |
-          docker run --rm -v "$PWD:/repo:ro" zricethezav/gitleaks:v8.24.2 git /repo --redact --no-banner
+          docker run --rm -v "$PWD:/repo:ro" \
+            ghcr.io/betterleaks/betterleaks@sha256:c6dfa75145fe5b31fdaf02feff18a73f1e11df8ca04876522f87f857656c83ca \
+            git /repo --log-opts='--all --full-history --diff-merges=first-parent' \
+            --validation=false --redact=100 --no-banner --no-color

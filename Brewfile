@@ -140,7 +140,7 @@ brew "pspg"
 
 # --- Security ---
 # Block credentials from entering Git history
-brew "gitleaks"
+brew "betterleaks"
 # Scan for endpoints, secrets, API keys, file extensions, tokens and more
 brew "cariddi"
 # Port scanning utility for large networks

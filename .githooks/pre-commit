@@ -4,13 +4,13 @@ set -euo pipefail
 
 root=$(git rev-parse --show-toplevel)
 python3 "$root/scripts/check-publication.py" --require-local
-if ! command -v gitleaks >/dev/null; then
-  echo "Publication guard: install gitleaks (brew install gitleaks) before committing." >&2
+if ! command -v betterleaks >/dev/null; then
+  echo "Publication guard: install betterleaks (brew install betterleaks) before committing." >&2
   exit 1
 fi
-# Scan added staged lines. Full-history scanning also runs in CI.
-git diff --cached --no-ext-diff --no-textconv --unified=0 --diff-filter=ACMR |
-  gitleaks stdin --redact --no-banner
+# Scan the index, not unstaged work; never validate credentials against live APIs.
+betterleaks git "$root" --pre-commit --staged \
+  --validation=false --redact=100 --no-banner --no-color
 
 cache="$(git rev-parse --git-dir)/1password-sync"
 mkdir -p "$cache"
