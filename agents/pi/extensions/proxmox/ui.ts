@@ -5,6 +5,8 @@ export interface Review {
   title: string;
   script: string;
   scope: string;
+  warning?: string;
+  transportLabel?: string;
 }
 
 // Render control characters visibly rather than letting scripts control the terminal.
@@ -20,7 +22,7 @@ export function fenced(text: string, language = "bash"): string {
 export async function approve(ctx: ExtensionContext, host: string, command: string, review: Review, signal: AbortSignal): Promise<boolean> {
   if (ctx.mode !== "tui") {
     return (await ctx.ui.confirm(`Allow root operation on ${host}?`,
-      `${review.title}\n${review.scope}\n\nScript:\n${review.script}\n\nExact remote command (JSON-escaped):\n${JSON.stringify(command)}\n\nRuns as root; may change or delete data.`, { signal })) === true;
+      `${review.title}\n${review.scope}\n\nScript:\n${review.script}\n\n${review.transportLabel || "Exact remote command (JSON-escaped)"}:\n${JSON.stringify(command)}\n\n${review.warning || "Runs as root; may change or delete data."}`, { signal })) === true;
   }
   let cancel: (() => void) | undefined;
   const onAbort = () => cancel?.();
@@ -42,8 +44,8 @@ export async function approve(ctx: ExtensionContext, host: string, command: stri
           total = lines.length;
           offset = Math.max(0, Math.min(offset, total - height));
           const header = [theme.fg("accent", review.title), `${host} · ${review.scope}`,
-            theme.fg("warning", "Runs as root. Commands may change or delete data."),
-            theme.fg("dim", transport ? "Exact SSH command" : "Script (executed unchanged inside /bin/sh -lc)")];
+            theme.fg("warning", review.warning || "Runs as root. Commands may change or delete data."),
+            theme.fg("dim", transport ? review.transportLabel || "Exact SSH command" : review.transportLabel || "Script (executed unchanged inside /bin/sh -lc)")];
           const footer = theme.fg("dim", `Y approve · N/Esc reject · ↑↓ scroll · X ${transport ? "script" : "exact SSH command"} · ${offset + 1}–${Math.min(total, offset + height)}/${total}`);
           return [...header, ...lines.slice(offset, offset + height), footer].map(line => truncateToWidth(line, width));
         },

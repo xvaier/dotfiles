@@ -1,12 +1,15 @@
 // Run: node --test ~/.dotfiles/agents/pi/tests/proxmox.test.mts (Node 22.18+).
 import assert from "node:assert/strict";
 import { execFileSync } from "node:child_process";
-import { existsSync, mkdtempSync, readFileSync, rmSync, statSync, writeFileSync } from "node:fs";
+import { chmodSync, existsSync, mkdirSync, mkdtempSync, readFileSync, readdirSync, rmSync, statSync, symlinkSync, writeFileSync } from "node:fs";
+import { createHash } from "node:crypto";
 import { homedir, tmpdir } from "node:os";
 import { dirname, join, resolve } from "node:path";
 import { pathToFileURL } from "node:url";
 import { after, test } from "node:test";
 import { apiCommand, command, lxcCommand, optionArgs, resultText, runSSH, sshTarget } from "../extensions/proxmox/core.ts";
+import { auditCommand, auditResult } from "../extensions/proxmox/audit.ts";
+import { transferFile, validateTransfer } from "../extensions/proxmox/transfer.ts";
 
 const directory = mkdtempSync(join(tmpdir(), "pi-proxmox-test-"));
 const log = join(directory, "ssh.jsonl");
@@ -27,14 +30,26 @@ if (mode === 'wait') { setInterval(() => {}, 1000); }
 else if (mode === 'large') { process.stdout.write('x'.repeat(200000)); }
 else if (mode === 'lines') { process.stdout.write('line\\n'.repeat(2500)); }
 else if (mode === 'fail') { process.stderr.write('transport failed\\n'); process.exitCode = 255; }
+else if (mode === 'corrupt-download') {
+  const result = spawnSync('/bin/sh', ['-c', args.at(-1)], { stdio: ['inherit', 'pipe', 'inherit'] });
+  process.stdout.write(Buffer.concat([result.stdout || Buffer.alloc(0), Buffer.from('corruption')]));
+  process.exitCode = result.status ?? 1;
+}
 else {
-  const result = spawnSync('/bin/sh', ['-c', args.at(-1)], { encoding: 'utf8' });
-  process.stdout.write(result.stdout || ''); process.stderr.write(result.stderr || '');
+  const result = spawnSync('/bin/sh', ['-c', args.at(-1)], { stdio: 'inherit' });
   process.exitCode = result.status ?? 1;
 }
 `, { mode: 0o700 });
-for (const program of ["pct", "pvesh", "pveversion", "uptime", "free", "df", "pvesm"]) {
-  writeFileSync(join(directory, program), `#!${process.execPath}\nconsole.log(JSON.stringify({program: ${JSON.stringify(program)}, args: process.argv.slice(2)}));\n`, { mode: 0o700 });
+for (const program of ["pct", "qm", "pvesh", "pveversion", "uptime", "free", "df", "pvesm"]) {
+  writeFileSync(join(directory, program), `#!${process.execPath}
+const args = process.argv.slice(2);
+const fixtures = JSON.parse(process.env.TEST_PROXMOX_API_FIXTURES || '{}');
+if (${JSON.stringify(program)} === 'pvesh' && Object.hasOwn(fixtures, args[1])) console.log(JSON.stringify(fixtures[args[1]]));
+else console.log(JSON.stringify({program: ${JSON.stringify(program)}, args}));
+`, { mode: 0o700 });
+}
+for (const program of ["lsblk", "efibootmgr", "mokutil", "proxmox-boot-tool", "systemctl", "smartctl", "lvs", "zpool"]) {
+  writeFileSync(join(directory, program), "#!/bin/sh\nexit 127\n", { mode: 0o700 });
 }
 after(() => {
   process.env.PATH = oldPath;
@@ -57,8 +72,8 @@ const { visibleWidth } = await import(pathToFileURL(join(modules, "@earendil-wor
 const tool = (name: string) => extension.tools.get(name)!.definition;
 const invoke = (name: string, params: unknown, ctx: unknown = { hasUI: false }, signal?: AbortSignal) => tool(name).execute("test", params, signal, undefined, ctx);
 
-test("real Pi loader registers five tools and /proxmox without connecting", () => {
-  assert.equal(extension.tools.size, 5);
+test("real Pi loader registers six tools and /proxmox without connecting", () => {
+  assert.equal(extension.tools.size, 6);
   assert.ok(extension.commands.has("proxmox"));
   assert.equal(callCount(), 0);
   for (const { definition } of extension.tools.values()) assert.ok(definition.outputSchema);
@@ -126,7 +141,10 @@ test("all mutation tools fail closed without UI or when declined", async () => {
     ["proxmox_exec", { command: "echo hello" }],
   ] as const) {
     await assert.rejects(invoke(name, params), /interactive approval/);
-    await assert.rejects(invoke(name, params, { hasUI: true, ui: { confirm: async () => false } }), /denied/);
+    const denied = await invoke(name, params, { hasUI: true, ui: { confirm: async () => false } });
+    assert.equal(denied.isError, true);
+    assert.equal(denied.details.outcome, "denied");
+    assert.match(denied.content[0].text, /nothing executed/);
   }
   assert.equal(callCount(), count);
 });
@@ -166,7 +184,7 @@ test("TUI approval highlights the original script, scrolls, exposes transport an
       view.handleInput("n");
     }),
   } };
-  await assert.rejects(invoke("proxmox_exec", { command: script, explanation: "Explain and print" }, ctx), /denied/);
+  assert.equal((await invoke("proxmox_exec", { command: script, explanation: "Explain and print" }, ctx)).details.outcome, "denied");
   assert.match(reviewed, /Explain and print/);
   assert.match(reviewed, /Explain the command/);
   assert.equal(callCount(), count);
@@ -209,6 +227,7 @@ test("transport failures produce tool errors with stderr", async () => {
     const result = await invoke("proxmox_overview", {});
     assert.equal(result.isError, true);
     assert.equal(result.details.code, 255);
+    assert.equal(result.details.outcome, "transport_error");
     assert.match(result.content[0].text, /transport failed/);
   } finally { delete process.env.TEST_PROXMOX_MODE; }
 });
@@ -239,13 +258,217 @@ test("timeout and cancellation terminate the SSH process and warn about remote s
   try {
     const timed = await runSSH("root@pve.example.test", "ignored", undefined, 1);
     assert.match(timed.interrupted!, /Timed out/);
+    assert.equal(timed.outcome, "timed_out");
     assert.match(resultText(timed), /may still be running/);
     const controller = new AbortController();
     const pending = runSSH("root@pve.example.test", "ignored", controller.signal);
     setTimeout(() => controller.abort(), 100);
-    assert.equal((await pending).interrupted, "Cancelled");
+    const cancelled = await pending;
+    assert.equal(cancelled.interrupted, "Cancelled");
+    assert.equal(cancelled.outcome, "cancelled");
     const count = callCount();
     await assert.rejects(runSSH("root@pve.example.test", "ignored", controller.signal));
     assert.equal(callCount(), count);
   } finally { delete process.env.TEST_PROXMOX_MODE; }
+});
+
+test("remote command failures, including exit 255, are not labelled connection loss", async () => {
+  for (const code of [1, 127, 255]) {
+    const result = await runSSH("root@pve.example.test", `printf 'step one completed\\n'; exit ${code}`);
+    assert.equal(result.outcome, "command_failed");
+    assert.equal(result.remoteExitCode, code);
+    assert.equal(result.code, code);
+    assert.equal(result.output, "step one completed\n");
+    assert.match(resultText(result), /Earlier steps may have completed/);
+    assert.doesNotMatch(resultText(result), /lost connection|completion is unknown/);
+    assert.doesNotMatch(result.output, /PI_PROXMOX_EXIT/);
+  }
+});
+
+const transferContext = { cwd: directory, hasUI: true, ui: { confirm: async () => true } };
+
+test("transfer approval is required before connecting or creating a destination", async () => {
+  const localPath = join(directory, "denied-download", "file");
+  const params = { direction: "download", remotePath: "/private/source", localPath };
+  const count = callCount();
+  await assert.rejects(invoke("proxmox_transfer", params), /interactive approval/);
+  const denied = await invoke("proxmox_transfer", params, { ...transferContext, ui: { confirm: async () => false } });
+  assert.equal(denied.details.outcome, "denied");
+  assert.equal(callCount(), count);
+  assert.equal(existsSync(dirname(localPath)), false);
+});
+
+test("binary downloads are checksum verified, private, and absent from tool output", async () => {
+  const source = join(directory, "remote ' ; $(touch injected) source.bin");
+  const bytes = Buffer.concat([Buffer.from("SECRET_FILE_BYTES"), Buffer.from(Array.from({ length: 256 * 4096 }, (_, i) => i % 256))]);
+  writeFileSync(source, bytes);
+  const localPath = join(directory, "private-download", "file.bin");
+  const result = await invoke("proxmox_transfer", { direction: "download", remotePath: source, localPath }, transferContext);
+  assert.equal(result.isError, false);
+  assert.equal(result.details.transfer.verified, true);
+  assert.equal(result.details.transfer.sha256, createHash("sha256").update(bytes).digest("hex"));
+  assert.deepEqual(readFileSync(localPath), bytes);
+  assert.equal(statSync(localPath).mode & 0o777, 0o600);
+  assert.equal(statSync(dirname(localPath)).mode & 0o777, 0o700);
+  assert.doesNotMatch(JSON.stringify(result), /SECRET_FILE_BYTES/);
+  assert.deepEqual(readdirSync(dirname(localPath)), ["file.bin"]);
+  assert.equal(existsSync(join(directory, "injected")), false);
+});
+
+test("downloads refuse overwrite, symlinks and public directories; explicit overwrite is atomic", async () => {
+  const source = join(directory, "overwrite-source");
+  const destination = join(directory, "overwrite-destination");
+  writeFileSync(source, "new bytes");
+  writeFileSync(destination, "old bytes");
+  await assert.rejects(invoke("proxmox_transfer", { direction: "download", remotePath: source, localPath: destination }, transferContext), /overwrite/);
+  assert.equal(readFileSync(destination, "utf8"), "old bytes");
+  const replaced = await invoke("proxmox_transfer", { direction: "download", remotePath: source, localPath: destination, overwrite: true }, transferContext);
+  assert.equal(replaced.isError, false);
+  assert.equal(readFileSync(destination, "utf8"), "new bytes");
+  const symlink = join(directory, "destination-link");
+  symlinkSync(destination, symlink);
+  assert.throws(() => validateTransfer({ direction: "download", remotePath: source, localPath: symlink, overwrite: true }, directory), /symlink/);
+  const publicDirectory = join(directory, "public-download");
+  mkdirSync(publicDirectory);
+  chmodSync(publicDirectory, 0o755);
+  await assert.rejects(transferFile("root@pve.example.test", { direction: "download", remotePath: source, localPath: join(publicDirectory, "file") }), /private/);
+  const failed = await invoke("proxmox_transfer", { direction: "download", remotePath: symlink, localPath: join(directory, "symlink-source-download") }, transferContext);
+  assert.equal(failed.isError, true);
+  assert.equal(existsSync(join(directory, "symlink-source-download")), false);
+});
+
+test("uploads verify bytes before publication and never overwrite without approval", async () => {
+  const localPath = join(directory, "upload-source");
+  const remotePath = join(directory, "remote ' upload.bin");
+  const bytes = Buffer.from("SECRET_UPLOAD_BYTES\u0000\u00ff");
+  writeFileSync(localPath, bytes);
+  let preview = "";
+  const ctx = { ...transferContext, ui: { confirm: async (_title: string, text: string) => { preview = text; return true; } } };
+  const uploaded = await invoke("proxmox_transfer", { direction: "upload", remotePath, localPath }, ctx);
+  assert.equal(uploaded.isError, false);
+  assert.deepEqual(readFileSync(remotePath), bytes);
+  assert.equal(statSync(remotePath).mode & 0o777, 0o600);
+  assert.match(preview, /Overwrite destination: NO/);
+  assert.match(preview, /Remote transfer program/);
+  assert.doesNotMatch(JSON.stringify(uploaded), /SECRET_UPLOAD_BYTES/);
+  writeFileSync(localPath, "replacement");
+  const refused = await invoke("proxmox_transfer", { direction: "upload", remotePath, localPath }, ctx);
+  assert.equal(refused.details.outcome, "command_failed");
+  assert.deepEqual(readFileSync(remotePath), bytes);
+  const replaced = await invoke("proxmox_transfer", { direction: "upload", remotePath, localPath, overwrite: true }, ctx);
+  assert.equal(replaced.isError, false);
+  assert.equal(readFileSync(remotePath, "utf8"), "replacement");
+  assert.equal(readdirSync(directory).some(name => name.startsWith(".pi-proxmox-transfer-")), false);
+});
+
+test("failed or cancelled downloads never publish a partial destination", async () => {
+  for (const mode of ["fail", "wait"]) {
+    const localPath = join(directory, `failed-${mode}`);
+    process.env.TEST_PROXMOX_MODE = mode;
+    try {
+      const controller = new AbortController();
+      const pending = invoke("proxmox_transfer", { direction: "download", remotePath: "/unused", localPath }, transferContext, controller.signal);
+      if (mode === "wait") setTimeout(() => controller.abort(), 100);
+      const result = await pending;
+      assert.equal(result.isError, true);
+      assert.equal(existsSync(localPath), false);
+      assert.equal(readdirSync(directory).some(name => name.startsWith(".pi-proxmox-transfer-")), false);
+    } finally { delete process.env.TEST_PROXMOX_MODE; }
+  }
+});
+
+test("audit sections are validated; missing probes do not hide successful probes", async () => {
+  assert.throws(() => auditCommand(["invalid" as never]), /valid audit/);
+  assert.throws(() => auditCommand([]), /valid audit/);
+  const result = await invoke("proxmox_overview", { sections: ["system", "boot"] });
+  assert.equal(result.isError, false);
+  assert.equal(result.details.audit.sections.system.status, "ok");
+  assert.match(result.details.audit.sections.system.probes.vms.data, /qm/);
+  assert.equal(result.details.audit.sections.boot.status, "partial");
+  assert.equal(result.details.audit.sections.boot.probes.entries.status, "unavailable");
+  assert.deepEqual(Object.keys(result.details.audit.sections), ["system", "boot"]);
+  assert.match(result.details.summary, /unavailable probes/);
+  const invalid = auditResult({ host: "test", command: "test", code: 0, remoteExitCode: 0, outcome: "completed", output: "not JSON" });
+  assert.equal(invalid.audit, undefined);
+});
+
+test("corrupt download is rejected without replacing an existing file", async () => {
+  const source = join(directory, "corruption-source");
+  const destination = join(directory, "corruption-destination");
+  writeFileSync(source, "original payload");
+  writeFileSync(destination, "keep this destination");
+  process.env.TEST_PROXMOX_MODE = "corrupt-download";
+  try {
+    const result = await invoke("proxmox_transfer", { direction: "download", remotePath: source, localPath: destination, overwrite: true }, transferContext);
+    assert.equal(result.isError, true);
+    assert.equal(result.details.outcome, "verification_failed");
+    assert.equal(result.details.transfer.verified, false);
+    assert.equal(readFileSync(destination, "utf8"), "keep this destination");
+    assert.equal(readdirSync(directory).some(name => name.startsWith(".pi-proxmox-transfer-")), false);
+  } finally { delete process.env.TEST_PROXMOX_MODE; }
+});
+
+test("upload checksum mismatch and remote symlinks never replace a destination", async () => {
+  const script = readFileSync(new URL("../extensions/proxmox/transfer.py", import.meta.url), "utf8");
+  const destination = join(directory, "bad-hash-destination");
+  writeFileSync(destination, "keep this file");
+  assert.throws(() => execFileSync("python3", ["-c", script, "upload", destination, "true", "0".repeat(64)], { input: "wrong payload", stdio: ["pipe", "pipe", "pipe"] }));
+  assert.equal(readFileSync(destination, "utf8"), "keep this file");
+  const link = join(directory, "remote-destination-symlink");
+  symlinkSync(destination, link);
+  const localPath = join(directory, "remote-symlink-upload-source");
+  writeFileSync(localPath, "do not publish");
+  const result = await invoke("proxmox_transfer", { direction: "upload", remotePath: link, localPath, overwrite: true }, transferContext);
+  assert.equal(result.isError, true);
+  assert.equal(readFileSync(destination, "utf8"), "keep this file");
+  assert.equal(readdirSync(directory).some(name => name.startsWith(".pi-proxmox-transfer-")), false);
+});
+
+test("audit includes QEMU storage and bind mounts while excluding credentials and descriptions", async () => {
+  const fixtures = {
+    "/cluster/resources": [
+      { vmid: 100, node: "actual-node", type: "lxc", name: "example-ct", status: "running" },
+      { vmid: 113, node: "actual-node", type: "qemu", name: "example-vm", status: "running" },
+    ],
+    "/nodes/actual-node/lxc/100/config": {
+      rootfs: "local-lvm:vm-100-disk-0,size=8G", mp0: "/mnt/archive,mp=/archive", dev0: "/dev/dri/renderD128",
+      description: "SECRET_DESCRIPTION", password: "SECRET_PASSWORD",
+      lxc: [["lxc.mount.entry", "/dev/net/tun dev/net/tun none bind,create=file"], ["lxc.environment", "SECRET_ENV"]],
+    },
+    "/nodes/actual-node/qemu/113/config": { scsi0: "local-lvm:vm-113-disk-0,size=32G", usb0: "host=1234:5678", cipassword: "SECRET_CLOUD_INIT", sshkeys: "SECRET_SSH_KEYS" },
+    "/nodes": [{ node: "actual-node", status: "online" }],
+    "/storage": [{ storage: "example-pbs", type: "pbs", server: "backup.example.test", datastore: "main", password: "SECRET_STORAGE" }],
+    "/nodes/actual-node/tasks": [{ type: "vzdump", status: "OK", starttime: 1, endtime: 2, user: "SECRET_USER" }],
+    "/nodes/actual-node/storage/example-pbs/content": [{ vmid: 100, ctime: 1, volid: "example-pbs:backup/ct/100/2026-01-01T00:00:00Z", notes: "SECRET_NOTES" }],
+  };
+  process.env.TEST_PROXMOX_API_FIXTURES = JSON.stringify(fixtures);
+  try {
+    const result = await invoke("proxmox_overview", { sections: ["guests", "backups"] });
+    assert.equal(result.isError, false);
+    const probes = result.details.audit.sections.guests.probes;
+    assert.equal(probes["config:113"].data.scsi0, "local-lvm:vm-113-disk-0,size=32G");
+    assert.equal(probes["config:100"].data.mp0, "/mnt/archive,mp=/archive");
+    assert.equal(probes["config:100"].data.lxc.length, 1);
+    assert.match(result.details.audit.sections.backups.probes.limits.data, /not restore tests/);
+    assert.doesNotMatch(JSON.stringify(result), /SECRET_/);
+  } finally { delete process.env.TEST_PROXMOX_API_FIXTURES; }
+});
+
+test("all audit collectors report their coverage limits without needing a live host", async () => {
+  const result = await invoke("proxmox_overview", { sections: ["system", "disks", "boot", "guests", "backups", "mounts", "recovery"] });
+  assert.equal(result.isError, false);
+  assert.equal(Object.keys(result.details.audit.sections).length, 7);
+  assert.equal(result.details.audit.sections.disks.probes.devices.status, "unavailable");
+  assert.ok(result.details.audit.sections.mounts.probes.fstab);
+  assert.match(result.details.audit.sections.recovery.probes.limits.data, /not been verified/);
+});
+
+test("large audits keep full private output and bounded structured probe statuses", async () => {
+  const path = join(directory, "full-audit.json");
+  writeFileSync(path, JSON.stringify({ collectedAt: 1, sections: { guests: { status: "ok", probes: { inventory: { status: "ok", data: "x".repeat(100000) } } } } }));
+  const parsed = auditResult({ host: "test", command: "test", code: 0, remoteExitCode: 0, outcome: "completed", output: "truncated JSON", fullOutputPath: path });
+  assert.equal(parsed.audit!.sections.guests.probes.inventory.status, "ok");
+  assert.equal(parsed.audit!.sections.guests.probes.inventory.data, undefined);
+  assert.match(parsed.audit!.sections.guests.probes.inventory.reason!, /full-output/);
+  assert.ok(JSON.stringify(parsed).length < 1000);
 });

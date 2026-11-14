@@ -12,7 +12,7 @@ The extensions target the current Pi release (1.5.0 at the time of writing). Old
 | `bash-guard.ts` | Asks before `rm -rf`, `sudo`, `chmod 777`, `dd of=/dev/…` and similar bash commands. |
 | `minimal-transcript.ts` | One-line tool calls with a short output preview; `ctrl+o` expands. |
 | `prompt-editor.ts` | Replaces the editor border with a `❯` prompt. |
-| `proxmox/` | Proxmox host and LXC management over SSH. See its README. |
+| `proxmox/` | Proxmox host/LXC/VM audits, management and approved file transfers over SSH. See its README. |
 | `quit.ts` | A bare `quit` message exits, like `/quit`. |
 | `quote-final-response.ts` | Renders final assistant answers as a quote block. |
 | `session-title.ts` | Names a new session `repo: first prompt`. Rename with `/name`. |

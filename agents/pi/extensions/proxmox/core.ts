@@ -1,5 +1,6 @@
 import { spawn } from "node:child_process";
-import { closeSync, mkdtempSync, openSync, readFileSync, readSync, rmSync, statSync } from "node:fs";
+import { closeSync, ftruncateSync, mkdtempSync, openSync, readFileSync, readSync, rmSync, statSync } from "node:fs";
+import { randomUUID } from "node:crypto";
 import { homedir, tmpdir } from "node:os";
 import { join } from "node:path";
 
@@ -91,29 +92,56 @@ export function sshTarget(configPath = join(process.env.PI_CODING_AGENT_DIR || j
   return host;
 }
 
+export type Outcome = "completed" | "command_failed" | "transport_error" | "timed_out" | "cancelled" | "denied" | "verification_failed";
 export interface SSHResult {
   host: string;
   command: string;
   code: number | null;
+  outcome: Outcome;
+  remoteExitCode?: number;
   output: string;
   fullOutputPath?: string;
   interrupted?: string;
 }
 
+export const SSH_OPTIONS = ["-T", "-o", "BatchMode=yes", "-o", "StrictHostKeyChecking=yes",
+  "-o", "ConnectTimeout=10", "-o", "ServerAliveInterval=15", "-o", "ServerAliveCountMax=2"];
+
+export interface SSHStreams {
+  inputPath?: string;
+  outputPath?: string;
+}
+
+export function outcomeText(result: SSHResult): string {
+  switch (result.outcome) {
+    case "denied": return "Approval denied; nothing executed.";
+    case "completed": return "Completed · exit 0";
+    case "verification_failed": return "Verification failed; operation is not confirmed successful. Inspect the destination before another mutation.";
+    case "command_failed": return `Remote command failed · exit ${result.remoteExitCode ?? result.code}. Earlier steps may have completed; inspect before another mutation.`;
+    case "transport_error": return "SSH transport/protocol failed; remote completion is unknown. Inspect remote state before another mutation.";
+    case "timed_out":
+    case "cancelled": return `${result.interrupted}. Remote operations may still be running. Inspect status before another mutation.`;
+  }
+}
+
 // Stream directly to a private file: logs cannot grow the Pi process's memory.
-export async function runSSH(host: string, remoteCommand: string, signal?: AbortSignal, timeoutSeconds = 120): Promise<SSHResult> {
+export async function runSSH(host: string, remoteCommand: string, signal?: AbortSignal, timeoutSeconds = 120, streams: SSHStreams = {}): Promise<SSHResult> {
   signal?.throwIfAborted();
   if (!Number.isFinite(timeoutSeconds) || timeoutSeconds < 1 || timeoutSeconds > 3600) throw new Error("Timeout must be between 1 and 3600 seconds");
   const directory = mkdtempSync(join(tmpdir(), "pi-proxmox-"));
   const outputPath = join(directory, "output.txt");
-  const fd = openSync(outputPath, "wx", 0o600);
+  const fd = openSync(outputPath, "wx+", 0o600);
+  const descriptors: number[] = [fd];
+  const marker = `PI_PROXMOX_EXIT_${randomUUID()}:`;
+  // A completion marker distinguishes remote exit 255 from SSH failure, even with binary stdout.
+  const transportCommand = `${command(["/bin/sh", "-c", remoteCommand])}; _pi_status=$?; printf '\\n${marker}%s\\n' "$_pi_status" >&2; exit "$_pi_status"`;
   try {
+    const input = streams.inputPath ? openSync(streams.inputPath, "r") : "ignore";
+    if (typeof input === "number") descriptors.push(input);
+    const stdout = streams.outputPath ? openSync(streams.outputPath, "wx", 0o600) : fd;
+    if (stdout !== fd) descriptors.push(stdout);
     const result = await new Promise<{ code: number | null; interrupted?: string }>((resolve, reject) => {
-      const child = spawn("ssh", [
-        "-T", "-o", "BatchMode=yes", "-o", "StrictHostKeyChecking=yes",
-        "-o", "ConnectTimeout=10", "-o", "ServerAliveInterval=15", "-o", "ServerAliveCountMax=2",
-        "--", host, remoteCommand,
-      ], { stdio: ["ignore", fd, fd] });
+      const child = spawn("ssh", [...SSH_OPTIONS, "--", host, transportCommand], { stdio: [input, stdout, fd] });
       let interrupted: string | undefined;
       let killTimer: ReturnType<typeof setTimeout> | undefined;
       const stop = (reason: string) => {
@@ -134,7 +162,19 @@ export async function runSSH(host: string, remoteCommand: string, signal?: Abort
       child.once("error", (error) => { cleanup(); reject(error); });
       child.once("close", (code) => { cleanup(); resolve({ code, interrupted }); });
     });
-    const size = statSync(outputPath).size;
+    let size = statSync(outputPath).size;
+    const tail = Buffer.alloc(Math.min(size, 256));
+    readSync(fd, tail, 0, tail.length, size - tail.length);
+    const match = tail.toString("utf8").match(new RegExp(`\\n${marker}(\\d+)\\n$`));
+    const remoteExitCode = match ? Number(match[1]) : undefined;
+    if (match) {
+      size -= Buffer.byteLength(match[0]);
+      ftruncateSync(fd, size);
+    }
+    const outcome: Outcome = result.interrupted
+      ? (result.interrupted === "Cancelled" ? "cancelled" : "timed_out")
+      : remoteExitCode === undefined || remoteExitCode !== result.code ? "transport_error"
+      : remoteExitCode === 0 ? "completed" : "command_failed";
     const preview = Buffer.alloc(Math.min(size, MAX_BYTES));
     const reader = openSync(outputPath, "r");
     try { readSync(reader, preview, 0, preview.length, 0); } finally { closeSync(reader); }
@@ -142,19 +182,18 @@ export async function runSSH(host: string, remoteCommand: string, signal?: Abort
     const truncated = size > MAX_BYTES || lines.length > MAX_LINES;
     const output = lines.slice(0, MAX_LINES).join("\n");
     if (!truncated) rmSync(directory, { recursive: true, force: true });
-    return { host, command: remoteCommand, ...result, output, ...(truncated ? { fullOutputPath: outputPath } : {}) };
+    return { host, command: remoteCommand, ...result, outcome, ...(remoteExitCode === undefined ? {} : { remoteExitCode }), output, ...(truncated ? { fullOutputPath: outputPath } : {}) };
   } catch (error) {
     rmSync(directory, { recursive: true, force: true });
     throw error;
   } finally {
-    closeSync(fd);
+    for (const descriptor of descriptors) closeSync(descriptor);
   }
 }
 
 export function resultText(result: SSHResult): string {
   let text = `${result.host}\n$ ${result.command}\n\n${result.output || "(no output)"}`;
   if (result.fullOutputPath) text += `\n\n[Output truncated to 48 KiB / 2000 lines. Full output: ${result.fullOutputPath}]`;
-  if (result.interrupted) text += `\n\n${result.interrupted}. Remote operations may still be running. Inspect status before retrying.`;
-  else if (result.code !== 0) text += `\n\nSSH/command exited with code ${result.code}. A lost connection does not prove a mutation failed; inspect before retrying.`;
+  if (result.outcome !== "completed") text += `\n\n${outcomeText(result)}`;
   return text;
 }
